@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#101219">
+    <meta name="theme-color" content="#11141b">
     <title>Modo Pasado | Spanisch lernen</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
         <nav class="nav-links" aria-label="Seitennavigation">
           <a href="#trainer">Üben</a>
           <a href="#lernen">Lernen</a>
-          <a href="#signalwoerter">Signalwörter</a>
+          <a href="#regeln">Regeln</a>
         </nav>
         <label class="strict-toggle">
           <input id="strictAccents" type="checkbox" checked>
@@ -33,28 +33,50 @@
       </header>
 
       <main>
-        <section id="trainer" class="trainer-layout" aria-labelledby="verbTitle">
-          <aside class="verb-panel">
-            <div class="panel-topline">
+        <section id="trainer" class="trainer-card" aria-labelledby="practiceTitle">
+          <div class="task-card" aria-labelledby="verbTitle">
+            <div class="task-meta">
               <span id="promptType">Infinitiv</span>
               <span id="verbGroup">-ar</span>
             </div>
-            <h1 id="verbTitle">hablar</h1>
-            <p id="promptHint">Fülle beide Vergangenheitstabellen aus.</p>
-            <div id="givenForm" class="given-form" hidden></div>
-            <div class="progress-card" aria-live="polite">
-              <span>Aktuelles Verb</span>
-              <strong id="sessionCount">1</strong>
+            <div class="verb-display">
+              <span class="verb-label">Aktuelle Aufgabe</span>
+              <h1 id="verbTitle">hablar</h1>
+              <p id="promptHint">Fülle die fehlenden Formen aus.</p>
             </div>
-          </aside>
+            <div id="givenForm" class="given-form" hidden></div>
+            <div class="task-footer">
+              <span>Aufgabe <strong id="sessionCount">1</strong></span>
+              <span id="lockedCount">0 Vorgaben</span>
+            </div>
+          </div>
 
           <section class="practice-panel" aria-label="Konjugationstrainer">
             <div class="practice-header">
               <div>
-                <h2>Vergangenheiten trainieren</h2>
-                <p>Trage die Formen für alle Personen ein und prüfe anschließend deine Lösung.</p>
+                <h2 id="practiceTitle">Vergangenheiten trainieren</h2>
+                <p>Ergänze Imperfecto und Pretérito Indefinido für alle Personen.</p>
               </div>
               <div id="resultSummary" class="result-summary" aria-live="polite">Bereit</div>
+            </div>
+
+            <div class="mode-bar" aria-label="Übungsmodus">
+              <label class="mode-toggle">
+                <input id="irregularOnly" type="checkbox">
+                <span class="mode-pill" aria-hidden="true">
+                  <span>Alle Verben</span>
+                  <span>Nur unregelmäßige</span>
+                </span>
+              </label>
+              <div class="verb-status" aria-live="polite">
+                <span id="verbKind">regelmäßig</span>
+                <span id="stemHint" hidden></span>
+              </div>
+            </div>
+
+            <div id="trainingNotice" class="training-notice" hidden>
+              <strong>Du trainierst aktuell nur die unregelmäßigen Formen.</strong>
+              <span id="relevantTenses">Imperfecto + Indefinido unregelmäßig</span>
             </div>
 
             <form id="practiceForm" autocomplete="off">
@@ -63,8 +85,8 @@
                   <thead>
                     <tr>
                       <th>Person</th>
-                      <th>Imperfecto</th>
-                      <th>Pretérito Indefinido</th>
+                      <th id="imperfectHead">Imperfecto</th>
+                      <th id="indefinidoHead">Pretérito Indefinido</th>
                     </tr>
                   </thead>
                   <tbody id="formsBody"></tbody>
@@ -82,36 +104,43 @@
 
         <section id="lernen" class="learning-section" aria-labelledby="learnTitle">
           <div class="section-heading">
-            <h2 id="learnTitle">Wann benutzt man welche Vergangenheit?</h2>
-            <p>Eine einfache Faustregel: Imperfecto beschreibt den Hintergrund. Indefinido erzählt, was passiert ist.</p>
+            <span>Lernbereich</span>
+            <h2 id="learnTitle">Imperfecto oder Pretérito Indefinido?</h2>
+            <p>Die wichtigste Idee: Imperfecto beschreibt den Hintergrund. Indefinido erzählt abgeschlossene Ereignisse.</p>
           </div>
 
           <div class="learning-grid">
             <article class="learn-card">
-              <h3>Imperfecto</h3>
-              <p>Benutze das Imperfecto für Zustände, Gewohnheiten, Beschreibungen und Situationen ohne klaren Anfang oder klares Ende.</p>
+              <h3>Wann benutzt man Imperfecto?</h3>
+              <p>Das Imperfecto benutzt du, wenn du beschreibst, wie etwas früher war, was regelmäßig passierte oder welche Situation im Hintergrund bestand.</p>
               <ul>
-                <li>Hintergrund: Wetter, Alter, Gefühle, Uhrzeit</li>
-                <li>Gewohnheiten: was früher regelmäßig passierte</li>
-                <li>Beschreibungen: wie etwas war</li>
+                <li><strong>Beschreibungen:</strong> Personen, Orte und Situationen in der Vergangenheit.</li>
+                <li><strong>Gewohnheiten:</strong> wiederholte Handlungen, zum Beispiel was man früher jeden Tag machte.</li>
+                <li><strong>Zustände:</strong> Gefühle, Alter, Uhrzeit, Wetter und allgemeine Umstände.</li>
+                <li><strong>Hintergrundinformationen:</strong> was gerade war, als etwas anderes passierte.</li>
               </ul>
               <div class="example">
-                <span>Antes estudiaba todos los días.</span>
-                <small>Früher lernte ich jeden Tag.</small>
+                <span>De niño vivía en Madrid.</span>
+                <small>Als Kind lebte ich in Madrid.</small>
               </div>
               <div class="example">
-                <span>Era tarde y hacía frío.</span>
-                <small>Es war spät und es war kalt.</small>
+                <span>Siempre estudiaba por la tarde.</span>
+                <small>Ich lernte immer am Nachmittag.</small>
+              </div>
+              <div class="example">
+                <span>Eran las ocho y hacía frío.</span>
+                <small>Es war acht Uhr und es war kalt.</small>
               </div>
             </article>
 
             <article class="learn-card">
-              <h3>Pretérito Indefinido</h3>
-              <p>Benutze das Indefinido für abgeschlossene Handlungen, konkrete Ereignisse und Aktionen, die die Geschichte voranbringen.</p>
+              <h3>Wann benutzt man Pretérito Indefinido?</h3>
+              <p>Das Indefinido benutzt du für Handlungen, die abgeschlossen sind und in der Erzählung als konkrete Ereignisse erscheinen.</p>
               <ul>
-                <li>Einmalige Ereignisse in der Vergangenheit</li>
-                <li>Handlungen mit klarem Zeitpunkt</li>
-                <li>Abgeschlossene Abfolge: erst dies, dann das</li>
+                <li><strong>Abgeschlossene Handlungen:</strong> etwas ist passiert und vorbei.</li>
+                <li><strong>Einmalige Ereignisse:</strong> ein konkreter Moment in der Vergangenheit.</li>
+                <li><strong>Klarer Anfang oder klares Ende:</strong> die Handlung ist zeitlich begrenzt.</li>
+                <li><strong>Reihenfolge von Ereignissen:</strong> erst passierte A, dann B, dann C.</li>
               </ul>
               <div class="example">
                 <span>Ayer comí con mis amigos.</span>
@@ -121,29 +150,97 @@
                 <span>Entró, habló y salió.</span>
                 <small>Er kam herein, sprach und ging hinaus.</small>
               </div>
+              <div class="example">
+                <span>Después escribí una carta.</span>
+                <small>Danach schrieb ich einen Brief.</small>
+              </div>
             </article>
           </div>
         </section>
 
-        <section id="signalwoerter" class="signal-section" aria-labelledby="signalTitle">
+        <section id="regeln" class="rules-section" aria-labelledby="rulesTitle">
           <div class="section-heading">
-            <h2 id="signalTitle">Typische Signalwörter</h2>
-            <p>Signalwörter helfen, aber die Bedeutung des Satzes ist wichtiger als ein einzelnes Wort.</p>
+            <span>Regeln & Signalwörter</span>
+            <h2 id="rulesTitle">Endungen und typische Hinweise</h2>
+            <p>Signalwörter sind nützlich, aber entscheide immer nach der Bedeutung im Satz.</p>
           </div>
-          <div class="signal-grid">
-            <article>
-              <h3>Oft mit Imperfecto</h3>
-              <p>antes, siempre, a menudo, normalmente, cada día, de niño/de niña, mientras</p>
+
+          <div class="info-grid">
+            <article class="info-card">
+              <h3>Signalwörter Imperfecto</h3>
+              <p>antes, siempre, a menudo, normalmente, de niño, cada día, mientras</p>
             </article>
-            <article>
-              <h3>Oft mit Indefinido</h3>
-              <p>ayer, anoche, la semana pasada, el año pasado, un día, de repente, entonces, en 2020</p>
-            </article>
-            <article>
-              <h3>Mini-Vergleich</h3>
-              <p><strong>Cuando era pequeño, jugaba mucho.</strong> beschreibt die Kindheit. <strong>Ayer jugué una hora.</strong> nennt ein abgeschlossenes Ereignis.</p>
+            <article class="info-card">
+              <h3>Signalwörter Indefinido</h3>
+              <p>ayer, anoche, la semana pasada, el año pasado, un día, de repente, entonces, después</p>
             </article>
           </div>
+
+          <div class="rules-grid">
+            <article class="rule-card">
+              <h3>Imperfecto -ar</h3>
+              <dl>
+                <div><dt>yo</dt><dd>-aba</dd></div>
+                <div><dt>tú</dt><dd>-abas</dd></div>
+                <div><dt>él/ella/usted</dt><dd>-aba</dd></div>
+                <div><dt>nosotros/as</dt><dd>-ábamos</dd></div>
+                <div><dt>vosotros/as</dt><dd>-abais</dd></div>
+                <div><dt>ellos/ellas/ustedes</dt><dd>-aban</dd></div>
+              </dl>
+            </article>
+            <article class="rule-card">
+              <h3>Imperfecto -er/-ir</h3>
+              <dl>
+                <div><dt>yo</dt><dd>-ía</dd></div>
+                <div><dt>tú</dt><dd>-ías</dd></div>
+                <div><dt>él/ella/usted</dt><dd>-ía</dd></div>
+                <div><dt>nosotros/as</dt><dd>-íamos</dd></div>
+                <div><dt>vosotros/as</dt><dd>-íais</dd></div>
+                <div><dt>ellos/ellas/ustedes</dt><dd>-ían</dd></div>
+              </dl>
+            </article>
+            <article class="rule-card">
+              <h3>Indefinido -ar</h3>
+              <dl>
+                <div><dt>yo</dt><dd>-é</dd></div>
+                <div><dt>tú</dt><dd>-aste</dd></div>
+                <div><dt>él/ella/usted</dt><dd>-ó</dd></div>
+                <div><dt>nosotros/as</dt><dd>-amos</dd></div>
+                <div><dt>vosotros/as</dt><dd>-asteis</dd></div>
+                <div><dt>ellos/ellas/ustedes</dt><dd>-aron</dd></div>
+              </dl>
+            </article>
+            <article class="rule-card">
+              <h3>Indefinido -er/-ir</h3>
+              <dl>
+                <div><dt>yo</dt><dd>-í</dd></div>
+                <div><dt>tú</dt><dd>-iste</dd></div>
+                <div><dt>él/ella/usted</dt><dd>-ió</dd></div>
+                <div><dt>nosotros/as</dt><dd>-imos</dd></div>
+                <div><dt>vosotros/as</dt><dd>-isteis</dd></div>
+                <div><dt>ellos/ellas/ustedes</dt><dd>-ieron</dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <article class="stem-card">
+            <h3>Stammänderungen im Indefinido</h3>
+            <p>Manche unregelmäßige Verben bekommen im Indefinido einen neuen Stamm. Danach verwenden sie typische besondere Endungen: <strong>yo -e</strong>, <strong>tú -iste</strong>, <strong>él/ella/usted -o</strong>, <strong>nosotros/as -imos</strong>, <strong>vosotros/as -isteis</strong>, <strong>ellos/ellas/ustedes -ieron / -eron</strong>.</p>
+            <div class="stem-list" aria-label="Unregelmäßige Stämme">
+              <span>tener → tuv-</span>
+              <span>estar → estuv-</span>
+              <span>poder → pud-</span>
+              <span>poner → pus-</span>
+              <span>saber → sup-</span>
+              <span>hacer → hic-/hiz-</span>
+              <span>venir → vin-</span>
+              <span>querer → quis-</span>
+              <span>decir → dij-</span>
+              <span>traer → traj-</span>
+              <span>andar → anduv-</span>
+            </div>
+            <p class="note">Bei <strong>decir</strong> und <strong>traer</strong> fällt das i vor <strong>-eron</strong> weg: <strong>dijeron</strong>, <strong>trajeron</strong>.</p>
+          </article>
         </section>
       </main>
     </div>

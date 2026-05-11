@@ -39,6 +39,25 @@ const allVerbs = [
   ...Object.keys(indefinidoIrregulars),
 ].filter((verb, index, list) => list.indexOf(verb) === index);
 
+const irregularVerbs = [
+  ...Object.keys(imperfectIrregulars),
+  ...Object.keys(indefinidoIrregulars),
+].filter((verb, index, list) => list.indexOf(verb) === index);
+
+const stemHints = {
+  tener: "tener → tuv-",
+  estar: "estar → estuv-",
+  poder: "poder → pud-",
+  poner: "poner → pus-",
+  saber: "saber → sup-",
+  hacer: "hacer → hic-/hiz-",
+  venir: "venir → vin-",
+  querer: "querer → quis-",
+  decir: "decir → dij-",
+  traer: "traer → traj-",
+  andar: "andar → anduv-",
+};
+
 const endings = {
   imperfect: {
     ar: ["aba", "abas", "aba", "ábamos", "abais", "aban"],
@@ -50,10 +69,35 @@ const endings = {
   },
 };
 
+const taskModes = [
+  {
+    id: "infinitiveOnly",
+    label: "Nur Infinitiv",
+    title: "Infinitiv gegeben",
+    hint: "Fülle alle Formen für beide Zeiten aus.",
+  },
+  {
+    id: "threeForms",
+    label: "3 Formen",
+    title: "Drei Formen gegeben",
+    hint: "Nutze die gesperrten Formen als Hinweis und ergänze den Rest.",
+  },
+  {
+    id: "infinitiveAndOne",
+    label: "Infinitiv + Form",
+    title: "Infinitiv und eine Form",
+    hint: "Eine Form ist bereits eingetragen. Ergänze alle übrigen Felder.",
+  },
+];
+
 const state = {
   currentVerb: "",
   sessionCount: 0,
-  prefilled: null,
+  lockedCells: [],
+  autoFilledCells: [],
+  activeTenses: ["imperfect", "indefinido"],
+  taskMode: taskModes[0],
+  irregularOnly: false,
 };
 
 const form = document.querySelector("#practiceForm");
@@ -64,8 +108,16 @@ const promptType = document.querySelector("#promptType");
 const promptHint = document.querySelector("#promptHint");
 const givenForm = document.querySelector("#givenForm");
 const strictAccents = document.querySelector("#strictAccents");
+const irregularOnly = document.querySelector("#irregularOnly");
 const resultSummary = document.querySelector("#resultSummary");
 const sessionCount = document.querySelector("#sessionCount");
+const lockedCount = document.querySelector("#lockedCount");
+const verbKind = document.querySelector("#verbKind");
+const stemHint = document.querySelector("#stemHint");
+const trainingNotice = document.querySelector("#trainingNotice");
+const relevantTenses = document.querySelector("#relevantTenses");
+const imperfectHead = document.querySelector("#imperfectHead");
+const indefinidoHead = document.querySelector("#indefinidoHead");
 const showSolutionButton = document.querySelector("#showSolution");
 const nextButton = document.querySelector("#nextVerb");
 
@@ -106,15 +158,62 @@ function randomFrom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-function makePrefill(forms) {
-  if (Math.random() < 0.5) return null;
-  const tense = randomFrom(["imperfect", "indefinido"]);
-  const personIndex = Math.floor(Math.random() * persons.length);
-  return {
+function getVerbPool() {
+  return state.irregularOnly ? irregularVerbs : allVerbs;
+}
+
+function isIrregularVerb(verb) {
+  return irregularVerbs.includes(verb);
+}
+
+function getIrregularTenses(verb) {
+  return [
+    imperfectIrregulars[verb] ? "imperfect" : null,
+    indefinidoIrregulars[verb] ? "indefinido" : null,
+  ].filter(Boolean);
+}
+
+function cellId(tense, personIndex) {
+  return `${tense}-${personIndex}`;
+}
+
+function getCellsForTenses(tenses) {
+  return tenses.flatMap((tense) =>
+    persons.map((_, personIndex) => ({ tense, personIndex }))
+  );
+}
+
+function makeLockedCells(forms, mode, activeTenses) {
+  if (mode.id === "infinitiveOnly") return [];
+
+  const amount = mode.id === "threeForms" ? 3 : 1;
+  const pool = getCellsForTenses(activeTenses);
+  const locked = [];
+
+  while (locked.length < Math.min(amount, pool.length) && pool.length > 0) {
+    const pickedIndex = Math.floor(Math.random() * pool.length);
+    const [picked] = pool.splice(pickedIndex, 1);
+    locked.push({
+      ...picked,
+      answer: forms[picked.tense][picked.personIndex],
+    });
+  }
+
+  return locked;
+}
+
+function makeAutoFilledCells(forms, activeTenses) {
+  if (!state.irregularOnly) return [];
+
+  const inactiveTenses = ["imperfect", "indefinido"].filter(
+    (tense) => !activeTenses.includes(tense)
+  );
+
+  return getCellsForTenses(inactiveTenses).map(({ tense, personIndex }) => ({
     tense,
     personIndex,
     answer: forms[tense][personIndex],
-  };
+  }));
 }
 
 function renderRows() {
@@ -123,12 +222,12 @@ function renderRows() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="person-cell">${person}</td>
-      <td class="input-cell">
+      <td class="input-cell tense-cell" data-tense-cell="imperfect">
         <label class="sr-only" for="imperfect-${index}">Imperfecto ${person}</label>
         <input class="verb-input" id="imperfect-${index}" data-tense="imperfect" data-index="${index}" type="text" inputmode="text" autocapitalize="none" spellcheck="false">
         <span class="answer-note" id="note-imperfect-${index}"></span>
       </td>
-      <td class="input-cell">
+      <td class="input-cell tense-cell" data-tense-cell="indefinido">
         <label class="sr-only" for="indefinido-${index}">Indefinido ${person}</label>
         <input class="verb-input" id="indefinido-${index}" data-tense="indefinido" data-index="${index}" type="text" inputmode="text" autocapitalize="none" spellcheck="false">
         <span class="answer-note" id="note-indefinido-${index}"></span>
@@ -141,7 +240,12 @@ function renderRows() {
 function clearFeedback() {
   document.querySelectorAll(".verb-input").forEach((input) => {
     input.classList.remove("correct", "incorrect");
-    if (!input.classList.contains("prefilled")) input.readOnly = false;
+    if (
+      !input.classList.contains("prefilled") &&
+      !input.classList.contains("auto-filled")
+    ) {
+      input.readOnly = false;
+    }
   });
   document.querySelectorAll(".answer-note").forEach((note) => {
     note.textContent = "";
@@ -151,35 +255,130 @@ function clearFeedback() {
   resultSummary.textContent = "Bereit";
 }
 
-function setExercise() {
-  state.currentVerb = randomFrom(allVerbs);
-  state.sessionCount += 1;
-  const forms = getForms(state.currentVerb);
-  state.prefilled = makePrefill(forms);
+function tenseLabel(tense) {
+  return tense === "imperfect" ? "Imperfecto" : "Indefinido";
+}
 
-  renderRows();
-  clearFeedback();
+function renderGivenForms() {
+  givenForm.innerHTML = "";
+  if (state.lockedCells.length === 0) {
+    givenForm.hidden = true;
+    return;
+  }
 
-  verbTitle.textContent = state.currentVerb;
-  verbGroup.textContent = `-${getGroup(state.currentVerb)}`;
-  sessionCount.textContent = state.sessionCount;
+  state.lockedCells.forEach(({ tense, personIndex, answer }) => {
+    const chip = document.createElement("div");
+    chip.className = "given-chip";
+    chip.innerHTML = `${persons[personIndex]} · ${tenseLabel(tense)}<strong>${answer}</strong>`;
+    givenForm.append(chip);
+  });
+  givenForm.hidden = false;
+}
 
-  if (state.prefilled) {
-    const { tense, personIndex, answer } = state.prefilled;
-    const input = document.querySelector(`#${tense}-${personIndex}`);
+function applyLockedCells() {
+  state.lockedCells.forEach(({ tense, personIndex, answer }) => {
+    const input = document.querySelector(`#${cellId(tense, personIndex)}`);
+    const note = document.querySelector(`#note-${cellId(tense, personIndex)}`);
     input.value = answer;
     input.readOnly = true;
     input.classList.add("prefilled");
-    promptType.textContent = "Form vorgegeben";
-    promptHint.textContent = "Eine Form ist schon eingetragen. Ergänze alle übrigen Formen.";
-    givenForm.hidden = false;
-    givenForm.innerHTML = `${persons[personIndex]} · ${tense === "imperfect" ? "Imperfecto" : "Indefinido"}<strong>${answer}</strong>`;
-  } else {
-    promptType.textContent = "Infinitiv";
-    promptHint.textContent = "Nur der Infinitiv ist gegeben. Fülle beide Tabellen vollständig aus.";
-    givenForm.hidden = true;
-    givenForm.textContent = "";
+    note.textContent = "Vorgegeben";
+  });
+}
+
+function applyAutoFilledCells() {
+  state.autoFilledCells.forEach(({ tense, personIndex, answer }) => {
+    const input = document.querySelector(`#${cellId(tense, personIndex)}`);
+    const note = document.querySelector(`#note-${cellId(tense, personIndex)}`);
+    input.value = answer;
+    input.readOnly = true;
+    input.disabled = true;
+    input.classList.add("auto-filled");
+    note.textContent = "Regelmäßig";
+  });
+}
+
+function updateActiveColumns() {
+  const activeSet = new Set(state.activeTenses);
+
+  document.querySelectorAll(".verb-input").forEach((input) => {
+    if (activeSet.has(input.dataset.tense)) {
+      input.classList.add("is-active");
+    } else {
+      input.classList.remove("is-active");
+    }
+  });
+
+  document.querySelectorAll(".tense-cell").forEach((cell) => {
+    const active = activeSet.has(cell.dataset.tenseCell);
+    cell.classList.toggle("is-active-column", active && state.irregularOnly);
+  });
+
+  imperfectHead.classList.toggle("is-active", activeSet.has("imperfect"));
+  imperfectHead.classList.toggle("is-inactive", !activeSet.has("imperfect"));
+  indefinidoHead.classList.toggle("is-active", activeSet.has("indefinido"));
+  indefinidoHead.classList.toggle("is-inactive", !activeSet.has("indefinido"));
+}
+
+function updateTrainingNotice() {
+  if (!state.irregularOnly) {
+    trainingNotice.hidden = true;
+    relevantTenses.textContent = "";
+    return;
   }
+
+  trainingNotice.hidden = false;
+  if (state.activeTenses.length === 2) {
+    relevantTenses.textContent = "Imperfecto + Indefinido unregelmäßig";
+  } else if (state.activeTenses[0] === "imperfect") {
+    relevantTenses.textContent = "Nur Imperfecto unregelmäßig";
+  } else {
+    relevantTenses.textContent = "Nur Indefinido unregelmäßig";
+  }
+}
+
+function updateVerbStatus() {
+  const irregular = isIrregularVerb(state.currentVerb);
+  verbKind.textContent = irregular ? "unregelmäßig" : "regelmäßig";
+
+  const hint = stemHints[state.currentVerb];
+  if (irregular && hint) {
+    stemHint.textContent = `Stamm: ${hint}`;
+    stemHint.hidden = false;
+  } else {
+    stemHint.textContent = "";
+    stemHint.hidden = true;
+  }
+}
+
+function setExercise() {
+  state.currentVerb = randomFrom(getVerbPool());
+  state.sessionCount += 1;
+  state.taskMode = randomFrom(taskModes);
+
+  const forms = getForms(state.currentVerb);
+  state.activeTenses = state.irregularOnly
+    ? getIrregularTenses(state.currentVerb)
+    : ["imperfect", "indefinido"];
+  state.autoFilledCells = makeAutoFilledCells(forms, state.activeTenses);
+  state.lockedCells = makeLockedCells(forms, state.taskMode, state.activeTenses);
+
+  renderRows();
+  clearFeedback();
+  updateActiveColumns();
+  applyAutoFilledCells();
+  applyLockedCells();
+  renderGivenForms();
+  updateTrainingNotice();
+
+  const showInfinitive = state.taskMode.id !== "threeForms";
+  verbTitle.textContent = showInfinitive ? state.currentVerb : "Formen erkennen";
+  verbGroup.textContent = showInfinitive ? `-${getGroup(state.currentVerb)}` : "Hinweis";
+  promptType.textContent = state.taskMode.title;
+  promptHint.textContent = state.taskMode.hint;
+  sessionCount.textContent = state.sessionCount;
+  lockedCount.textContent = `${state.lockedCells.length} Vorgabe${state.lockedCells.length === 1 ? "" : "n"}`;
+  updateVerbStatus();
 
   const firstEditable = document.querySelector(".verb-input:not([readonly])");
   if (firstEditable) firstEditable.focus({ preventScroll: true });
@@ -187,6 +386,7 @@ function setExercise() {
 
 function checkAnswers(showAnswers = false) {
   const forms = getForms(state.currentVerb);
+  const activeSet = new Set(state.activeTenses);
   let correct = 0;
   let total = 0;
 
@@ -194,24 +394,32 @@ function checkAnswers(showAnswers = false) {
     const tense = input.dataset.tense;
     const index = Number(input.dataset.index);
     const expected = forms[tense][index];
-    const note = document.querySelector(`#note-${tense}-${index}`);
+    const note = document.querySelector(`#note-${cellId(tense, index)}`);
     const answerIsCorrect = isCorrect(input.value, expected);
+    const isActive = activeSet.has(tense);
 
-    total += 1;
     input.classList.remove("correct", "incorrect");
     note.classList.remove("is-error");
+
+    if (!isActive) {
+      input.value = expected;
+      note.textContent = "Regelmäßig";
+      return;
+    }
+
+    total += 1;
 
     if (showAnswers) {
       input.value = expected;
       input.classList.add("correct");
-      note.textContent = "Lösung";
+      note.textContent = input.classList.contains("prefilled") ? "Vorgegeben" : "Lösung";
       correct += 1;
       return;
     }
 
     if (answerIsCorrect) {
       input.classList.add("correct");
-      note.textContent = "Richtig";
+      note.textContent = input.classList.contains("prefilled") ? "Vorgegeben" : "Richtig";
       correct += 1;
     } else {
       input.classList.add("incorrect");
@@ -232,5 +440,9 @@ form.addEventListener("submit", (event) => {
 showSolutionButton.addEventListener("click", () => checkAnswers(true));
 nextButton.addEventListener("click", setExercise);
 strictAccents.addEventListener("change", clearFeedback);
+irregularOnly.addEventListener("change", () => {
+  state.irregularOnly = irregularOnly.checked;
+  setExercise();
+});
 
 setExercise();

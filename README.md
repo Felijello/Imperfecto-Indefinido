@@ -6,7 +6,14 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto** und **P
 
 - Zufällige Verbübungen ohne feste Runden
 - Tabelle für alle Personen in beiden Zeiten
-- Manchmal nur Infinitiv, manchmal eine vorgegebene Form
+- Drei zufällige Aufgabenmodi:
+  - nur der Infinitiv ist gegeben
+  - drei zufällige Formen sind vorgegeben und gesperrt
+  - Infinitiv plus eine zufällige Form sind gegeben
+- Umschaltbarer Modus "Nur unregelmäßige Verben"
+- Kleine Anzeige, ob das aktuelle Verb regelmäßig oder unregelmäßig ist
+- Stammhinweise für passende unregelmäßige Indefinido-Formen
+- Im Modus "Nur unregelmäßige Verben" werden nur die tatsächlich unregelmäßigen Zeitformen aktiv abgefragt; regelmäßige Zeitformen werden automatisch neutral ausgefüllt und gesperrt
 - Prüfung mit grüner und roter Markierung
 - Lösung anzeigen und direkt zum nächsten Verb wechseln
 - Optionaler Modus für strenge Akzentprüfung
