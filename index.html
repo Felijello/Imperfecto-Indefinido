@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101219">
+    <title>Modo Pasado | Spanisch lernen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar" aria-label="App Navigation">
+        <a class="brand" href="#trainer" aria-label="Modo Pasado Start">
+          <span class="brand-mark" aria-hidden="true">MP</span>
+          <span>
+            <strong>Modo Pasado</strong>
+            <small>Imperfecto & Indefinido</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Seitennavigation">
+          <a href="#trainer">Üben</a>
+          <a href="#lernen">Lernen</a>
+          <a href="#signalwoerter">Signalwörter</a>
+        </nav>
+        <label class="strict-toggle">
+          <input id="strictAccents" type="checkbox" checked>
+          <span class="toggle-track" aria-hidden="true"></span>
+          <span>Akzente streng</span>
+        </label>
+      </header>
+
+      <main>
+        <section id="trainer" class="trainer-layout" aria-labelledby="verbTitle">
+          <aside class="verb-panel">
+            <div class="panel-topline">
+              <span id="promptType">Infinitiv</span>
+              <span id="verbGroup">-ar</span>
+            </div>
+            <h1 id="verbTitle">hablar</h1>
+            <p id="promptHint">Fülle beide Vergangenheitstabellen aus.</p>
+            <div id="givenForm" class="given-form" hidden></div>
+            <div class="progress-card" aria-live="polite">
+              <span>Aktuelles Verb</span>
+              <strong id="sessionCount">1</strong>
+            </div>
+          </aside>
+
+          <section class="practice-panel" aria-label="Konjugationstrainer">
+            <div class="practice-header">
+              <div>
+                <h2>Vergangenheiten trainieren</h2>
+                <p>Trage die Formen für alle Personen ein und prüfe anschließend deine Lösung.</p>
+              </div>
+              <div id="resultSummary" class="result-summary" aria-live="polite">Bereit</div>
+            </div>
+
+            <form id="practiceForm" autocomplete="off">
+              <div class="table-wrap">
+                <table class="verb-table">
+                  <thead>
+                    <tr>
+                      <th>Person</th>
+                      <th>Imperfecto</th>
+                      <th>Pretérito Indefinido</th>
+                    </tr>
+                  </thead>
+                  <tbody id="formsBody"></tbody>
+                </table>
+              </div>
+
+              <div class="actions" aria-label="Übungsaktionen">
+                <button class="button primary" type="submit">Prüfen</button>
+                <button id="showSolution" class="button secondary" type="button">Lösung anzeigen</button>
+                <button id="nextVerb" class="button ghost" type="button">Weiter</button>
+              </div>
+            </form>
+          </section>
+        </section>
+
+        <section id="lernen" class="learning-section" aria-labelledby="learnTitle">
+          <div class="section-heading">
+            <h2 id="learnTitle">Wann benutzt man welche Vergangenheit?</h2>
+            <p>Eine einfache Faustregel: Imperfecto beschreibt den Hintergrund. Indefinido erzählt, was passiert ist.</p>
+          </div>
+
+          <div class="learning-grid">
+            <article class="learn-card">
+              <h3>Imperfecto</h3>
+              <p>Benutze das Imperfecto für Zustände, Gewohnheiten, Beschreibungen und Situationen ohne klaren Anfang oder klares Ende.</p>
+              <ul>
+                <li>Hintergrund: Wetter, Alter, Gefühle, Uhrzeit</li>
+                <li>Gewohnheiten: was früher regelmäßig passierte</li>
+                <li>Beschreibungen: wie etwas war</li>
+              </ul>
+              <div class="example">
+                <span>Antes estudiaba todos los días.</span>
+                <small>Früher lernte ich jeden Tag.</small>
+              </div>
+              <div class="example">
+                <span>Era tarde y hacía frío.</span>
+                <small>Es war spät und es war kalt.</small>
+              </div>
+            </article>
+
+            <article class="learn-card">
+              <h3>Pretérito Indefinido</h3>
+              <p>Benutze das Indefinido für abgeschlossene Handlungen, konkrete Ereignisse und Aktionen, die die Geschichte voranbringen.</p>
+              <ul>
+                <li>Einmalige Ereignisse in der Vergangenheit</li>
+                <li>Handlungen mit klarem Zeitpunkt</li>
+                <li>Abgeschlossene Abfolge: erst dies, dann das</li>
+              </ul>
+              <div class="example">
+                <span>Ayer comí con mis amigos.</span>
+                <small>Gestern aß ich mit meinen Freunden.</small>
+              </div>
+              <div class="example">
+                <span>Entró, habló y salió.</span>
+                <small>Er kam herein, sprach und ging hinaus.</small>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="signalwoerter" class="signal-section" aria-labelledby="signalTitle">
+          <div class="section-heading">
+            <h2 id="signalTitle">Typische Signalwörter</h2>
+            <p>Signalwörter helfen, aber die Bedeutung des Satzes ist wichtiger als ein einzelnes Wort.</p>
+          </div>
+          <div class="signal-grid">
+            <article>
+              <h3>Oft mit Imperfecto</h3>
+              <p>antes, siempre, a menudo, normalmente, cada día, de niño/de niña, mientras</p>
+            </article>
+            <article>
+              <h3>Oft mit Indefinido</h3>
+              <p>ayer, anoche, la semana pasada, el año pasado, un día, de repente, entonces, en 2020</p>
+            </article>
+            <article>
+              <h3>Mini-Vergleich</h3>
+              <p><strong>Cuando era pequeño, jugaba mucho.</strong> beschreibt die Kindheit. <strong>Ayer jugué una hora.</strong> nennt ein abgeschlossenes Ereignis.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>
