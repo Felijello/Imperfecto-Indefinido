@@ -40,7 +40,12 @@
               <span id="verbGroup">-ar</span>
             </div>
             <div class="verb-display">
-              <span class="verb-label">Aktuelle Aufgabe</span>
+              <div class="verb-display-top">
+                <span class="verb-label">Aktuelle Aufgabe</span>
+                <button id="starVerb" class="star-button" type="button" aria-pressed="false" aria-label="Verb als schwer markieren">
+                  <span aria-hidden="true">☆</span>
+                </button>
+              </div>
               <h1 id="verbTitle">hablar</h1>
               <p id="promptHint">Fülle die fehlenden Formen aus.</p>
             </div>
@@ -68,6 +73,13 @@
                   <span>Nur unregelmäßige</span>
                 </span>
               </label>
+              <label class="marked-toggle">
+                <input id="markedOnly" type="checkbox">
+                <span class="marked-pill">
+                  <span aria-hidden="true">★</span>
+                  Nur markierte Verben
+                </span>
+              </label>
               <div class="verb-status" aria-live="polite">
                 <span id="verbKind">regelmäßig</span>
                 <span id="stemHint" hidden></span>
@@ -77,6 +89,10 @@
             <div id="trainingNotice" class="training-notice" hidden>
               <strong>Du trainierst aktuell nur die unregelmäßigen Formen.</strong>
               <span id="relevantTenses">Imperfecto + Indefinido unregelmäßig</span>
+            </div>
+            <div id="markedNotice" class="training-notice marked-notice" hidden>
+              <strong>Du hast noch keine Verben markiert.</strong>
+              <span>Markiere schwere Verben mit dem Stern, um sie gezielt zu üben.</span>
             </div>
 
             <form id="practiceForm" autocomplete="off">
@@ -124,6 +140,16 @@
             <h2 id="learnTitle">Imperfecto oder Pretérito Indefinido?</h2>
             <p>Die wichtigste Idee: Imperfecto beschreibt den Hintergrund. Indefinido erzählt abgeschlossene Ereignisse.</p>
           </div>
+
+          <article class="marked-card" aria-labelledby="markedTitle">
+            <div>
+              <span class="marked-kicker">Merkliste</span>
+              <h3 id="markedTitle">Schwere Verben</h3>
+              <p id="markedOverviewText">Markierte Verben erscheinen hier und bleiben in diesem Browser gespeichert.</p>
+            </div>
+            <div id="markedList" class="marked-list" aria-live="polite"></div>
+            <button id="clearMarked" class="button danger small" type="button" hidden>Alle Markierungen löschen</button>
+          </article>
 
           <div class="learning-grid">
             <article class="learn-card">

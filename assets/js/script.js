@@ -90,6 +90,8 @@ const taskModes = [
   },
 ];
 
+const markedStorageKey = "modoPasado.markedVerbs";
+
 const state = {
   currentVerb: "",
   sessionCount: 0,
@@ -99,6 +101,8 @@ const state = {
   tenseFilter: "both",
   taskMode: taskModes[0],
   irregularOnly: false,
+  markedOnly: false,
+  markedVerbs: loadMarkedVerbs(),
 };
 
 const form = document.querySelector("#practiceForm");
@@ -112,18 +116,61 @@ const practiceSubtitle = document.querySelector("#practiceSubtitle");
 const givenForm = document.querySelector("#givenForm");
 const strictAccents = document.querySelector("#strictAccents");
 const irregularOnly = document.querySelector("#irregularOnly");
+const markedOnly = document.querySelector("#markedOnly");
+const starVerb = document.querySelector("#starVerb");
 const resultSummary = document.querySelector("#resultSummary");
 const sessionCount = document.querySelector("#sessionCount");
 const lockedCount = document.querySelector("#lockedCount");
 const verbKind = document.querySelector("#verbKind");
 const stemHint = document.querySelector("#stemHint");
 const trainingNotice = document.querySelector("#trainingNotice");
+const markedNotice = document.querySelector("#markedNotice");
 const relevantTenses = document.querySelector("#relevantTenses");
 const imperfectHead = document.querySelector("#imperfectHead");
 const indefinidoHead = document.querySelector("#indefinidoHead");
 const tenseFilterInputs = document.querySelectorAll('input[name="tenseFilter"]');
 const showSolutionButton = document.querySelector("#showSolution");
 const nextButton = document.querySelector("#nextVerb");
+const markedList = document.querySelector("#markedList");
+const markedOverviewText = document.querySelector("#markedOverviewText");
+const clearMarked = document.querySelector("#clearMarked");
+
+function loadMarkedVerbs() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(markedStorageKey) || "[]");
+    return saved.filter((verb) => allVerbs.includes(verb));
+  } catch {
+    return [];
+  }
+}
+
+function saveMarkedVerbs() {
+  localStorage.setItem(markedStorageKey, JSON.stringify(state.markedVerbs));
+}
+
+function isMarkedVerb(verb) {
+  return state.markedVerbs.includes(verb);
+}
+
+function toggleMarkedVerb(verb) {
+  if (!verb || !allVerbs.includes(verb)) return;
+
+  if (isMarkedVerb(verb)) {
+    state.markedVerbs = state.markedVerbs.filter((item) => item !== verb);
+  } else {
+    state.markedVerbs = [...state.markedVerbs, verb].sort((a, b) => a.localeCompare(b));
+  }
+
+  saveMarkedVerbs();
+  renderStarButton();
+  renderMarkedList();
+
+  if (state.markedOnly && !getVerbPool().includes(state.currentVerb)) {
+    setExercise();
+  } else {
+    updateMarkedNotice();
+  }
+}
 
 function getStem(verb) {
   return verb.slice(0, -2);
@@ -170,11 +217,18 @@ function getSelectedTenses() {
 
 function getVerbPool() {
   const selectedTenses = getSelectedTenses();
-  if (!state.irregularOnly) return allVerbs;
+  let pool = state.irregularOnly
+    ? irregularVerbs.filter((verb) =>
+        getIrregularTenses(verb).some((tense) => selectedTenses.includes(tense))
+      )
+    : [...allVerbs];
 
-  return irregularVerbs.filter((verb) =>
-    getIrregularTenses(verb).some((tense) => selectedTenses.includes(tense))
-  );
+  if (state.markedOnly) {
+    const markedSet = new Set(state.markedVerbs);
+    pool = pool.filter((verb) => markedSet.has(verb));
+  }
+
+  return pool;
 }
 
 function isIrregularVerb(verb) {
@@ -374,6 +428,77 @@ function updateTrainingNotice() {
   }
 }
 
+function getMarkedNoticeText() {
+  if (state.markedVerbs.length === 0) {
+    return {
+      title: "Du hast noch keine Verben markiert.",
+      detail: "Markiere schwere Verben mit dem Stern, um sie gezielt zu üben.",
+    };
+  }
+
+  return {
+    title: "Keine markierten Verben passen zu diesen Filtern.",
+    detail: "Ändere den Zeitform-Filter oder deaktiviere „Nur unregelmäßige Verben“.",
+  };
+}
+
+function updateMarkedNotice(forceShow = false) {
+  if (!state.markedOnly && !forceShow) {
+    markedNotice.hidden = true;
+    return;
+  }
+
+  const poolIsEmpty = state.markedOnly && getVerbPool().length === 0;
+  markedNotice.hidden = !forceShow && !poolIsEmpty;
+
+  if (!markedNotice.hidden) {
+    const text = getMarkedNoticeText();
+    markedNotice.querySelector("strong").textContent = text.title;
+    markedNotice.querySelector("span").textContent = text.detail;
+  }
+}
+
+function renderStarButton() {
+  const active = isMarkedVerb(state.currentVerb);
+  starVerb.disabled = !state.currentVerb || !allVerbs.includes(state.currentVerb);
+  starVerb.setAttribute("aria-pressed", String(active));
+  starVerb.setAttribute(
+    "aria-label",
+    active ? "Markierung für dieses schwere Verb entfernen" : "Verb als schwer markieren"
+  );
+  starVerb.querySelector("span").textContent = active ? "★" : "☆";
+}
+
+function renderMarkedList() {
+  markedList.innerHTML = "";
+
+  if (state.markedVerbs.length === 0) {
+    markedOverviewText.textContent =
+      "Du hast noch keine Verben markiert. Nutze den Stern beim aktuellen Verb.";
+    clearMarked.hidden = true;
+    const empty = document.createElement("p");
+    empty.className = "marked-empty";
+    empty.textContent = "Noch keine schweren Verben gespeichert.";
+    markedList.append(empty);
+    return;
+  }
+
+  markedOverviewText.textContent = `${state.markedVerbs.length} Verb${
+    state.markedVerbs.length === 1 ? "" : "en"
+  } in deiner Merkliste.`;
+  clearMarked.hidden = false;
+
+  state.markedVerbs.forEach((verb) => {
+    const item = document.createElement("div");
+    item.className = "marked-item";
+    item.innerHTML = `
+      <span>${verb}</span>
+      <button type="button" data-remove-marked="${verb}" aria-label="${verb} aus der Merkliste entfernen">Entfernen</button>
+    `;
+    markedList.append(item);
+  });
+}
+
 function updateVerbStatus() {
   const irregular = isIrregularVerb(state.currentVerb);
   verbKind.textContent = irregular ? "unregelmäßig" : "regelmäßig";
@@ -388,8 +513,46 @@ function updateVerbStatus() {
   }
 }
 
+function renderEmptyExercise() {
+  state.currentVerb = "";
+  state.lockedCells = [];
+  state.autoFilledCells = [];
+  state.activeTenses = getSelectedTenses();
+
+  renderRows();
+  clearFeedback();
+  updateActiveColumns();
+  document.querySelectorAll(".verb-input").forEach((input) => {
+    input.disabled = true;
+    input.readOnly = true;
+  });
+  givenForm.hidden = true;
+  updateTrainingNotice();
+  updateMarkedNotice(true);
+  renderStarButton();
+  renderMarkedList();
+
+  const text = getMarkedNoticeText();
+  verbTitle.textContent = "Merkliste leer";
+  verbGroup.textContent = "Merkliste";
+  promptType.textContent = "Schwere Verben";
+  promptHint.textContent = text.detail;
+  practiceSubtitle.textContent = "Markiere schwere Verben, um sie gezielt zu üben.";
+  lockedCount.textContent = "0 Vorgaben";
+  resultSummary.className = "result-summary";
+  resultSummary.textContent = "Keine Verben";
+  verbKind.textContent = "Merkliste";
+  stemHint.hidden = true;
+  stemHint.textContent = "";
+}
+
 function setExercise() {
   const verbPool = getVerbPool();
+  if (verbPool.length === 0) {
+    renderEmptyExercise();
+    return;
+  }
+
   state.currentVerb = randomFrom(verbPool);
   state.sessionCount += 1;
   state.taskMode = randomFrom(taskModes);
@@ -411,6 +574,9 @@ function setExercise() {
   applyLockedCells();
   renderGivenForms();
   updateTrainingNotice();
+  updateMarkedNotice();
+  renderStarButton();
+  renderMarkedList();
 
   const showInfinitive = state.taskMode.id !== "threeForms";
   verbTitle.textContent = showInfinitive ? state.currentVerb : "Formen erkennen";
@@ -426,6 +592,13 @@ function setExercise() {
 }
 
 function checkAnswers(showAnswers = false) {
+  if (!state.currentVerb) {
+    updateMarkedNotice(true);
+    resultSummary.className = "result-summary";
+    resultSummary.textContent = "Keine Verben";
+    return;
+  }
+
   const forms = getForms(state.currentVerb);
   const activeSet = new Set(state.activeTenses);
   let correct = 0;
@@ -484,6 +657,27 @@ strictAccents.addEventListener("change", clearFeedback);
 irregularOnly.addEventListener("change", () => {
   state.irregularOnly = irregularOnly.checked;
   setExercise();
+});
+markedOnly.addEventListener("change", () => {
+  state.markedOnly = markedOnly.checked;
+  setExercise();
+});
+starVerb.addEventListener("click", () => toggleMarkedVerb(state.currentVerb));
+markedList.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-remove-marked]");
+  if (!button) return;
+  toggleMarkedVerb(button.dataset.removeMarked);
+});
+clearMarked.addEventListener("click", () => {
+  state.markedVerbs = [];
+  saveMarkedVerbs();
+  renderMarkedList();
+  renderStarButton();
+  if (state.markedOnly) {
+    setExercise();
+  } else {
+    updateMarkedNotice();
+  }
 });
 tenseFilterInputs.forEach((input) => {
   input.addEventListener("change", () => {

@@ -163,7 +163,8 @@ a {
 }
 
 .strict-toggle input,
-.mode-toggle input {
+.mode-toggle input,
+.marked-toggle input {
   position: absolute;
   opacity: 0;
 }
@@ -206,7 +207,8 @@ a {
 .learn-card,
 .info-card,
 .rule-card,
-.stem-card {
+.stem-card,
+.marked-card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(25, 31, 42, 0.9);
@@ -233,12 +235,54 @@ a {
   margin: 14px 0 12px;
 }
 
+.verb-display-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
 .verb-label {
   display: block;
-  margin-bottom: 5px;
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.star-button {
+  display: grid;
+  width: var(--tap);
+  height: var(--tap);
+  place-items: center;
+  border: 1px solid rgba(244, 199, 99, 0.26);
+  border-radius: 999px;
+  background: rgba(244, 199, 99, 0.08);
+  color: var(--warning);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.star-button:hover,
+.star-button:focus-visible {
+  border-color: rgba(244, 199, 99, 0.62);
+  background: rgba(244, 199, 99, 0.14);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.star-button[aria-pressed="true"] {
+  background: rgba(244, 199, 99, 0.18);
+  box-shadow: 0 0 0 4px rgba(244, 199, 99, 0.08);
+}
+
+.star-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
 }
 
 .verb-display h1 {
@@ -409,6 +453,46 @@ a {
 
 .mode-toggle input:checked + .mode-pill span + span {
   color: #0d1713;
+}
+
+.marked-toggle {
+  display: block;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.marked-pill {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(13, 17, 24, 0.72);
+  color: var(--muted);
+  font-size: clamp(0.76rem, 3vw, 0.86rem);
+  font-weight: 800;
+  text-align: center;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.marked-pill span {
+  color: var(--warning);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.marked-toggle input:checked + .marked-pill {
+  border-color: rgba(244, 199, 99, 0.56);
+  background: rgba(244, 199, 99, 0.14);
+  color: #f7df9f;
+}
+
+.marked-toggle input:focus-visible + .marked-pill {
+  outline: 3px solid rgba(244, 199, 99, 0.18);
+  outline-offset: 2px;
 }
 
 .verb-status {
@@ -703,6 +787,19 @@ a {
   color: #c7f6e2;
 }
 
+.button.danger {
+  border-color: rgba(242, 118, 134, 0.34);
+  background: rgba(242, 118, 134, 0.1);
+  color: #ffadb7;
+}
+
+.button.small {
+  width: fit-content;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 0.82rem;
+}
+
 .learning-section,
 .rules-section {
   padding: 34px 0 0;
@@ -726,6 +823,78 @@ a {
 .rules-grid {
   display: grid;
   gap: 12px;
+}
+
+.marked-card {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 15px;
+}
+
+.marked-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--warning);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.marked-card h3 {
+  margin: 0 0 6px;
+  font-size: 1.08rem;
+}
+
+.marked-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.marked-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.marked-item {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px 5px 11px;
+  border: 1px solid rgba(244, 199, 99, 0.24);
+  border-radius: 999px;
+  background: rgba(244, 199, 99, 0.08);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.marked-item button {
+  min-height: 30px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.marked-item button:hover,
+.marked-item button:focus-visible {
+  background: rgba(242, 118, 134, 0.16);
+  color: #ffadb7;
+  outline: none;
+}
+
+.marked-empty {
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .learn-card,
@@ -874,7 +1043,8 @@ a {
   .learn-card,
   .info-card,
   .rule-card,
-  .stem-card {
+  .stem-card,
+  .marked-card {
     padding: 18px;
   }
 
@@ -884,8 +1054,17 @@ a {
   }
 
   .mode-bar {
-    grid-template-columns: minmax(280px, 0.72fr) 1fr;
+    grid-template-columns: minmax(280px, 0.8fr) minmax(210px, 0.58fr) 1fr;
     align-items: center;
+  }
+
+  .marked-card {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+
+  .marked-list {
+    grid-column: 1 / -1;
   }
 
   .verb-status {
