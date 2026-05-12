@@ -21,6 +21,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto** und **P
 - Ausführlicher Lernbereich mit Regeln, Beispielen und Signalwörtern
 - Dark Mode, große Eingabefelder und responsives Layout
 - Mobile-first UI mit iPhone-optimierten Übungskarten und Sticky-Bottom-Aktionen
+- Vercel Web Analytics für Besucher- und Page-View-Statistiken
 
 ## Verben
 
@@ -32,6 +33,7 @@ Die App nutzt ausschließlich die in der Aufgabenstellung vorgegebenen Verben:
 ## Lokal starten
 
 Die Webseite ist statisch und benötigt keinen Build-Schritt.
+Vercel Analytics ist als HTML-Script eingebunden, daher ist kein npm-Package nötig.
 
 1. Repository klonen oder herunterladen.
 2. `index.html` im Browser öffnen.
