@@ -11,6 +11,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto** und **P
   - drei zufällige Formen sind vorgegeben und gesperrt
   - Infinitiv plus eine zufällige Form sind gegeben
 - Umschaltbarer Modus "Nur unregelmäßige Verben"
+- Zeitform-Filter für beide Zeiten, nur Imperfecto oder nur Indefinido
 - Kleine Anzeige, ob das aktuelle Verb regelmäßig oder unregelmäßig ist
 - Stammhinweise für passende unregelmäßige Indefinido-Formen
 - Im Modus "Nur unregelmäßige Verben" werden nur die tatsächlich unregelmäßigen Zeitformen aktiv abgefragt; regelmäßige Zeitformen werden automatisch neutral ausgefüllt und gesperrt

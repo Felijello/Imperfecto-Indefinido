@@ -55,7 +55,7 @@
             <div class="practice-header">
               <div>
                 <h2 id="practiceTitle">Vergangenheiten trainieren</h2>
-                <p>Ergänze Imperfecto und Pretérito Indefinido für alle Personen.</p>
+                <p id="practiceSubtitle">Ergänze Imperfecto und Pretérito Indefinido für alle Personen.</p>
               </div>
               <div id="resultSummary" class="result-summary" aria-live="polite">Bereit</div>
             </div>
@@ -80,6 +80,22 @@
             </div>
 
             <form id="practiceForm" autocomplete="off">
+              <fieldset class="tense-filter" aria-label="Zeitform auswählen">
+                <legend>Zeitform</legend>
+                <label>
+                  <input type="radio" name="tenseFilter" value="both" checked>
+                  <span>Beide</span>
+                </label>
+                <label>
+                  <input type="radio" name="tenseFilter" value="imperfect">
+                  <span>Nur Imperfecto</span>
+                </label>
+                <label>
+                  <input type="radio" name="tenseFilter" value="indefinido">
+                  <span>Nur Indefinido</span>
+                </label>
+              </fieldset>
+
               <div class="table-wrap">
                 <table class="verb-table">
                   <thead>
