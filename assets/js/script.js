@@ -102,6 +102,7 @@ const state = {
 
 const form = document.querySelector("#practiceForm");
 const formsBody = document.querySelector("#formsBody");
+const practiceForm = document.querySelector("#practiceForm");
 const verbTitle = document.querySelector("#verbTitle");
 const verbGroup = document.querySelector("#verbGroup");
 const promptType = document.querySelector("#promptType");
@@ -222,12 +223,12 @@ function renderRows() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="person-cell">${person}</td>
-      <td class="input-cell tense-cell" data-tense-cell="imperfect">
+      <td class="input-cell tense-cell" data-tense-cell="imperfect" data-label="Imperfecto">
         <label class="sr-only" for="imperfect-${index}">Imperfecto ${person}</label>
         <input class="verb-input" id="imperfect-${index}" data-tense="imperfect" data-index="${index}" type="text" inputmode="text" autocapitalize="none" spellcheck="false">
         <span class="answer-note" id="note-imperfect-${index}"></span>
       </td>
-      <td class="input-cell tense-cell" data-tense-cell="indefinido">
+      <td class="input-cell tense-cell" data-tense-cell="indefinido" data-label="Indefinido">
         <label class="sr-only" for="indefinido-${index}">Indefinido ${person}</label>
         <input class="verb-input" id="indefinido-${index}" data-tense="indefinido" data-index="${index}" type="text" inputmode="text" autocapitalize="none" spellcheck="false">
         <span class="answer-note" id="note-indefinido-${index}"></span>
@@ -300,6 +301,7 @@ function applyAutoFilledCells() {
 
 function updateActiveColumns() {
   const activeSet = new Set(state.activeTenses);
+  practiceForm.dataset.activeTenses = state.activeTenses.join("-");
 
   document.querySelectorAll(".verb-input").forEach((input) => {
     if (activeSet.has(input.dataset.tense)) {
@@ -312,6 +314,7 @@ function updateActiveColumns() {
   document.querySelectorAll(".tense-cell").forEach((cell) => {
     const active = activeSet.has(cell.dataset.tenseCell);
     cell.classList.toggle("is-active-column", active && state.irregularOnly);
+    cell.classList.toggle("is-collapsed", state.irregularOnly && !active);
   });
 
   imperfectHead.classList.toggle("is-active", activeSet.has("imperfect"));

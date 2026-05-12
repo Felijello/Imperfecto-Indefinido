@@ -19,6 +19,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto** und **P
 - Optionaler Modus für strenge Akzentprüfung
 - Ausführlicher Lernbereich mit Regeln, Beispielen und Signalwörtern
 - Dark Mode, große Eingabefelder und responsives Layout
+- Mobile-first UI mit iPhone-optimierten Übungskarten und Sticky-Bottom-Aktionen
 
 ## Verben
 
