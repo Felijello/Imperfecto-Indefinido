@@ -130,7 +130,7 @@ const state = {
   lockedCells: [],
   autoFilledCells: [],
   activeTenses: [...allTenses],
-  tenseFilter: "all",
+  selectedTenses: [...allTenses],
   taskMode: taskModes[0],
   irregularOnly: false,
   markedOnly: false,
@@ -168,7 +168,7 @@ const relevantTenses = document.querySelector("#relevantTenses");
 const imperfectHead = document.querySelector("#imperfectHead");
 const indefinidoHead = document.querySelector("#indefinidoHead");
 const perfectoHead = document.querySelector("#perfectoHead");
-const tenseFilterInputs = document.querySelectorAll('input[name="tenseFilter"]');
+const tenseToggleInputs = document.querySelectorAll('input[name="tenseToggle"]');
 const showSolutionButton = document.querySelector("#showSolution");
 const nextButton = document.querySelector("#nextVerb");
 const markedList = document.querySelector("#markedList");
@@ -516,10 +516,13 @@ function randomFrom(list) {
 }
 
 function getSelectedTenses() {
-  if (state.tenseFilter === "imperfect") return ["imperfect"];
-  if (state.tenseFilter === "indefinido") return ["indefinido"];
-  if (state.tenseFilter === "perfecto") return ["perfecto"];
-  return [...allTenses];
+  return [...state.selectedTenses];
+}
+
+function syncTenseToggles() {
+  tenseToggleInputs.forEach((input) => {
+    input.checked = state.selectedTenses.includes(input.value);
+  });
 }
 
 function getVerbPool() {
@@ -580,7 +583,7 @@ function makeLockedCells(forms, mode, activeTenses) {
 }
 
 function makeAutoFilledCells(forms, activeTenses) {
-  if (!state.irregularOnly || state.tenseFilter !== "all") return [];
+  if (!state.irregularOnly || state.selectedTenses.length !== allTenses.length) return [];
 
   const inactiveTenses = allTenses.filter((tense) => !activeTenses.includes(tense));
 
@@ -701,6 +704,7 @@ function applyAutoFilledCells() {
 function updateActiveColumns() {
   const activeSet = new Set(state.activeTenses);
   practiceForm.dataset.activeTenses = state.activeTenses.join("-");
+  document.querySelector(".practice-panel").dataset.activeCount = String(state.activeTenses.length);
 
   document.querySelectorAll(".verb-input").forEach((input) => {
     if (activeSet.has(input.dataset.tense)) {
@@ -1317,13 +1321,24 @@ clearMistakesButton.addEventListener("click", () => {
   renderMistakeOverview();
   if (sentenceState.mode === "mistakes") renderSentenceExercise();
 });
-tenseFilterInputs.forEach((input) => {
+tenseToggleInputs.forEach((input) => {
   input.addEventListener("change", () => {
-    state.tenseFilter = input.value;
+    const nextTenses = [...tenseToggleInputs]
+      .filter((toggle) => toggle.checked)
+      .map((toggle) => toggle.value);
+
+    if (nextTenses.length === 0) {
+      syncTenseToggles();
+      return;
+    }
+
+    state.selectedTenses = nextTenses;
+    syncTenseToggles();
     setExercise();
   });
 });
 
+syncTenseToggles();
 setExercise();
 renderSentenceExercise();
 renderMistakeOverview();

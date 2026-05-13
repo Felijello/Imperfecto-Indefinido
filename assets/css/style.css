@@ -539,7 +539,7 @@ a {
 
 .tense-filter {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   margin: 0 0 12px;
   padding: 4px;
@@ -572,12 +572,12 @@ a {
 
 .tense-filter span {
   display: grid;
-  min-height: 38px;
+  min-height: 36px;
   place-items: center;
-  padding: 0 7px;
+  padding: 0 6px;
   border-radius: 999px;
   color: var(--muted);
-  font-size: clamp(0.7rem, 2.9vw, 0.82rem);
+  font-size: clamp(0.68rem, 2.75vw, 0.82rem);
   font-weight: 800;
   line-height: 1.1;
   text-align: center;
@@ -587,6 +587,7 @@ a {
 .tense-filter input:checked + span {
   background: var(--accent);
   color: #0b1712;
+  box-shadow: 0 0 0 3px rgba(123, 224, 184, 0.08);
 }
 
 .table-wrap {
@@ -606,15 +607,15 @@ a {
 
 .verb-table tbody {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .verb-table tr {
   display: grid;
   grid-template-columns: minmax(4.8rem, 0.78fr) minmax(0, 1fr);
-  gap: 8px;
+  gap: 7px;
   align-items: start;
-  padding: 10px;
+  padding: 9px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.027);
@@ -629,7 +630,7 @@ a {
 .person-cell {
   align-self: center;
   color: var(--text);
-  font-size: clamp(0.78rem, 3.4vw, 0.94rem);
+  font-size: clamp(0.74rem, 3.2vw, 0.92rem);
   font-weight: 800;
   line-height: 1.2;
 }
@@ -672,13 +673,13 @@ a {
 .verb-input {
   width: 100%;
   min-width: 0;
-  min-height: 46px;
-  padding: 11px 12px;
+  min-height: 42px;
+  padding: 9px 10px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--field);
   color: var(--text);
-  font-size: clamp(0.96rem, 4vw, 1.08rem);
+  font-size: clamp(0.9rem, 3.6vw, 1.04rem);
   font-weight: 750;
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease, transform 150ms ease;
@@ -1209,7 +1210,7 @@ a {
 
 @media (min-width: 430px) {
   .verb-table tr {
-    grid-template-columns: minmax(5.8rem, 0.62fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(5.1rem, 0.54fr) repeat(3, minmax(0, 1fr));
   }
 
   .input-cell[data-tense-cell="imperfect"] {
@@ -1222,6 +1223,48 @@ a {
 
   .input-cell[data-tense-cell="perfecto"] {
     grid-column: 4;
+  }
+}
+
+@media (max-width: 429px) {
+  .practice-panel {
+    padding: 12px;
+  }
+
+  .practice-header {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .mode-bar {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .verb-table tr {
+    grid-template-columns: minmax(4.35rem, 0.42fr) repeat(var(--active-tense-count, 1), minmax(0, 1fr));
+  }
+
+  .practice-panel[data-active-count="1"] .verb-table tr {
+    --active-tense-count: 1;
+  }
+
+  .practice-panel[data-active-count="2"] .verb-table tr {
+    --active-tense-count: 2;
+  }
+
+  .practice-panel[data-active-count="3"] .verb-table tr {
+    --active-tense-count: 3;
+  }
+
+  .practice-panel[data-active-count="3"] .input-cell::before {
+    font-size: 0.58rem;
+  }
+
+  .practice-panel[data-active-count="3"] .verb-input {
+    padding-right: 7px;
+    padding-left: 7px;
+    font-size: clamp(0.78rem, 3.25vw, 0.94rem);
   }
 }
 
@@ -1242,7 +1285,7 @@ a {
   }
 
   .tense-filter {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .strict-toggle {

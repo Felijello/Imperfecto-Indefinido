@@ -96,23 +96,19 @@
             </div>
 
             <form id="practiceForm" autocomplete="off">
-              <fieldset class="tense-filter" aria-label="Zeitform auswählen">
+              <fieldset class="tense-filter" aria-label="Zeitformen auswählen">
                 <legend>Zeitform</legend>
                 <label>
-                  <input type="radio" name="tenseFilter" value="all" checked>
-                  <span>Alle Zeiten</span>
+                  <input type="checkbox" name="tenseToggle" value="imperfect" checked>
+                  <span>Imperfecto</span>
                 </label>
                 <label>
-                  <input type="radio" name="tenseFilter" value="imperfect">
-                  <span>Nur Imperfecto</span>
+                  <input type="checkbox" name="tenseToggle" value="indefinido" checked>
+                  <span>Indefinido</span>
                 </label>
                 <label>
-                  <input type="radio" name="tenseFilter" value="indefinido">
-                  <span>Nur Indefinido</span>
-                </label>
-                <label>
-                  <input type="radio" name="tenseFilter" value="perfecto">
-                  <span>Nur Perfecto</span>
+                  <input type="checkbox" name="tenseToggle" value="perfecto" checked>
+                  <span>Perfecto</span>
                 </label>
               </fieldset>
 
