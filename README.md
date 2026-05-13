@@ -12,7 +12,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pret
   - Infinitiv plus eine zufällige Form sind gegeben
 - Umschaltbarer Modus "Nur unregelmäßige Verben"
 - Zeitform-Filter für alle Zeiten, nur Imperfecto, nur Indefinido oder nur Perfecto
-- Satzübungen zur Zeitwahl mit Multiple Choice, Lücke ausfüllen und Zeitform-Auswahl
+- Satzübungen zur Zeitwahl mit Lückensätzen und drei echten Formen desselben Verbs
 - Merkliste für schwere Verben mit dauerhaft gespeicherter Stern-Markierung
 - Filter "Nur markierte Verben" für gezieltes Wiederholen
 - Kleine Anzeige, ob das aktuelle Verb regelmäßig oder unregelmäßig ist

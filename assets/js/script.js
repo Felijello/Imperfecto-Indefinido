@@ -182,71 +182,81 @@ const nextSentenceButton = document.querySelector("#nextSentence");
 
 const sentenceExercises = [
   {
-    type: "choice",
-    prompt: "Ayer yo ___ al cine.",
+    prompt: "Ayer nosotros ___ al cine.",
     answer: "indefinido",
-    form: "fui",
-    options: ["iba", "fui", "he ido"],
-    explanation: "Indefinido passt hier, weil „ayer“ einen abgeschlossenen Zeitpunkt in der Vergangenheit nennt.",
+    form: "fuimos",
+    options: ["fuimos", "íbamos", "hemos ido"],
+    explanation: "Fuimos ist richtig, weil „ayer“ eine abgeschlossene Handlung in der Vergangenheit beschreibt.",
   },
   {
-    type: "choice",
-    prompt: "Cuando era niño, siempre ___ fútbol.",
+    prompt: "Cuando era niño, yo siempre ___ fútbol.",
     answer: "imperfect",
     form: "jugaba",
     options: ["jugué", "jugaba", "he jugado"],
-    explanation: "Imperfecto passt hier, weil es um eine wiederholte Gewohnheit in der Kindheit geht.",
+    explanation: "Jugaba ist richtig, weil „siempre“ und „cuando era niño“ eine wiederholte Gewohnheit beschreiben.",
   },
   {
-    type: "fill",
     prompt: "Esta semana yo ___ mucho.",
     answer: "perfecto",
     form: "he estudiado",
-    explanation: "Perfecto passt hier, weil „esta semana“ ein Zeitraum ist, der noch mit der Gegenwart verbunden ist.",
+    options: ["estudié", "estudiaba", "he estudiado"],
+    explanation: "He estudiado ist richtig, weil „esta semana“ einen Zeitraum nennt, der noch mit der Gegenwart verbunden ist.",
   },
   {
-    type: "tense",
-    prompt: "Mientras ella estudiaba, yo hice la tarea.",
-    answer: "imperfect",
-    form: "estudiaba",
-    explanation: "Imperfecto beschreibt hier die laufende Hintergrundhandlung, während eine abgeschlossene Handlung passiert.",
-  },
-  {
-    type: "choice",
     prompt: "Anoche nosotros ___ en casa.",
     answer: "indefinido",
     form: "comimos",
     options: ["comíamos", "comimos", "hemos comido"],
-    explanation: "Indefinido passt, weil „anoche“ einen klar abgeschlossenen Zeitpunkt markiert.",
+    explanation: "Comimos ist richtig, weil „anoche“ einen klar abgeschlossenen Zeitpunkt markiert.",
   },
   {
-    type: "fill",
-    prompt: "Todavía no ___ el libro.",
+    prompt: "Todavía no yo ___ el libro.",
     answer: "perfecto",
     form: "he leído",
-    explanation: "Perfecto passt, weil „todavía no“ beschreibt, was bis jetzt noch nicht passiert ist.",
+    options: ["leí", "leía", "he leído"],
+    explanation: "He leído ist richtig, weil „todavía no“ beschreibt, was bis jetzt noch nicht passiert ist.",
   },
   {
-    type: "tense",
-    prompt: "De niño, mi hermano siempre veía dibujos.",
+    prompt: "De niño, mi hermano siempre ___ dibujos.",
     answer: "imperfect",
     form: "veía",
-    explanation: "Imperfecto passt, weil der Satz eine frühere Gewohnheit beschreibt.",
+    options: ["vio", "veía", "ha visto"],
+    explanation: "Veía ist richtig, weil der Satz eine frühere Gewohnheit beschreibt.",
   },
   {
-    type: "choice",
     prompt: "Entonces ella ___ la puerta y entró.",
     answer: "indefinido",
     form: "abrió",
     options: ["abría", "abrió", "ha abierto"],
-    explanation: "Indefinido passt, weil mehrere abgeschlossene Ereignisse nacheinander erzählt werden.",
+    explanation: "Abrió ist richtig, weil mehrere abgeschlossene Ereignisse nacheinander erzählt werden.",
   },
   {
-    type: "fill",
     prompt: "Nunca nosotros ___ en Valencia.",
     answer: "perfecto",
     form: "hemos vivido",
-    explanation: "Perfecto passt, weil „nunca“ hier eine Erfahrung bis heute ausdrückt.",
+    options: ["vivimos", "vivíamos", "hemos vivido"],
+    explanation: "Hemos vivido ist richtig, weil „nunca“ hier eine Erfahrung bis heute ausdrückt.",
+  },
+  {
+    prompt: "Mientras ella ___, yo hice la tarea.",
+    answer: "imperfect",
+    form: "estudiaba",
+    options: ["estudió", "estudiaba", "ha estudiado"],
+    explanation: "Estudiaba ist richtig, weil „mientras“ hier eine laufende Hintergrundhandlung beschreibt.",
+  },
+  {
+    prompt: "El año pasado ellos ___ a Madrid.",
+    answer: "indefinido",
+    form: "fueron",
+    options: ["fueron", "iban", "han ido"],
+    explanation: "Fueron ist richtig, weil „el año pasado“ einen abgeschlossenen Zeitraum beschreibt.",
+  },
+  {
+    prompt: "Hoy tú ___ una carta.",
+    answer: "perfecto",
+    form: "has escrito",
+    options: ["escribiste", "escribías", "has escrito"],
+    explanation: "Has escrito ist richtig, weil „hoy“ mit der Gegenwart verbunden ist.",
   },
 ];
 
@@ -777,12 +787,7 @@ function renderSentenceExercise() {
   sentenceState.current = exercise;
   sentenceState.selected = "";
 
-  sentenceType.textContent =
-    exercise.type === "fill"
-      ? "Lücke ausfüllen"
-      : exercise.type === "tense"
-        ? "Zeitform auswählen"
-        : "Multiple Choice";
+  sentenceType.textContent = "Lücke + Auswahl";
   sentencePrompt.textContent = exercise.prompt;
   sentenceOptions.innerHTML = "";
   sentenceFeedback.textContent = "";
@@ -790,24 +795,14 @@ function renderSentenceExercise() {
   sentenceResult.className = "result-summary";
   sentenceResult.textContent = "Bereit";
   sentenceInput.value = "";
-  sentenceInput.hidden = exercise.type !== "fill";
+  sentenceInput.hidden = true;
 
-  if (exercise.type === "fill") {
-    sentenceInput.placeholder = "z. B. he estudiado";
-    return;
-  }
-
-  const options =
-    exercise.type === "tense"
-      ? ["imperfect", "indefinido", "perfecto"]
-      : exercise.options;
-
-  options.forEach((option) => {
+  exercise.options.forEach((option) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "sentence-option";
     button.dataset.value = option;
-    button.textContent = exercise.type === "tense" ? tenseLabel(option) : option;
+    button.textContent = option;
     sentenceOptions.append(button);
   });
 }
@@ -816,32 +811,23 @@ function checkSentenceExercise() {
   const exercise = sentenceState.current;
   if (!exercise) return;
 
-  const rawAnswer = exercise.type === "fill" ? sentenceInput.value : sentenceState.selected;
-  const expected = exercise.type === "fill" ? exercise.form : exercise.type === "tense" ? exercise.answer : exercise.form;
-  const correct = exercise.type === "tense"
-    ? rawAnswer === exercise.answer
-    : isCorrect(rawAnswer, expected);
+  const rawAnswer = sentenceState.selected;
+  const correct = isCorrect(rawAnswer, exercise.form);
 
   sentenceOptions.querySelectorAll(".sentence-option").forEach((button) => {
-    const expectedValue = exercise.type === "tense" ? exercise.answer : exercise.form;
-    button.classList.toggle("correct", button.dataset.value === expectedValue);
+    button.classList.toggle("correct", button.dataset.value === exercise.form);
     button.classList.toggle(
       "incorrect",
-      button.dataset.value === sentenceState.selected && button.dataset.value !== expectedValue
+      button.dataset.value === sentenceState.selected && button.dataset.value !== exercise.form
     );
   });
-
-  if (exercise.type === "fill") {
-    sentenceInput.classList.toggle("correct", correct);
-    sentenceInput.classList.toggle("incorrect", !correct);
-  }
 
   sentenceResult.className = `result-summary ${correct ? "is-success" : "has-errors"}`;
   sentenceResult.textContent = correct ? "Richtig" : "Nochmal anschauen";
   sentenceFeedback.className = `sentence-feedback ${correct ? "is-success" : "has-errors"}`;
   sentenceFeedback.textContent = correct
     ? exercise.explanation
-    : `${exercise.explanation} Richtige Antwort: ${exercise.type === "tense" ? tenseLabel(exercise.answer) : exercise.form}.`;
+    : `${exercise.explanation} Richtige Antwort: ${exercise.form}.`;
 }
 
 form.addEventListener("submit", (event) => {
@@ -889,11 +875,6 @@ sentenceOptions.addEventListener("click", (event) => {
   sentenceFeedback.className = "sentence-feedback";
   sentenceResult.className = "result-summary";
   sentenceResult.textContent = "Ausgewählt";
-});
-sentenceInput.addEventListener("input", () => {
-  sentenceInput.classList.remove("correct", "incorrect");
-  sentenceFeedback.textContent = "";
-  sentenceFeedback.className = "sentence-feedback";
 });
 checkSentenceButton.addEventListener("click", checkSentenceExercise);
 nextSentenceButton.addEventListener("click", renderSentenceExercise);
