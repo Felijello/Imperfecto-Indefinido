@@ -31,6 +31,7 @@ const indefinidoIrregulars = {
   dar: ["di", "diste", "dio", "dimos", "disteis", "dieron"],
   ver: ["vi", "viste", "vio", "vimos", "visteis", "vieron"],
   andar: ["anduve", "anduviste", "anduvo", "anduvimos", "anduvisteis", "anduvieron"],
+  morir: ["morí", "moriste", "murió", "morimos", "moristeis", "murieron"],
 };
 
 const perfectAuxiliaries = ["he", "has", "ha", "hemos", "habéis", "han"];
@@ -59,12 +60,13 @@ const allVerbs = [
   ...regularVerbs,
   ...Object.keys(imperfectIrregulars),
   ...Object.keys(indefinidoIrregulars),
+  ...Object.keys(irregularParticiples),
 ].filter((verb, index, list) => list.indexOf(verb) === index);
 
 const irregularVerbs = [
   ...Object.keys(imperfectIrregulars),
   ...Object.keys(indefinidoIrregulars),
-  ...Object.keys(irregularParticiples).filter((verb) => allVerbs.includes(verb)),
+  ...Object.keys(irregularParticiples),
 ].filter((verb, index, list) => list.indexOf(verb) === index);
 
 const stemHints = {

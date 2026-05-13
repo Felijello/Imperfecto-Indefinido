@@ -31,7 +31,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pret
 Die App nutzt ausschließlich die in der Aufgabenstellung vorgegebenen Verben:
 
 - Regelmäßig: hablar, estudiar, comer, beber, vivir, escribir
-- Unregelmäßig: ir, ser, ver, hacer, tener, estar, poder, poner, venir, querer, saber, decir, traer, dar, andar
+- Unregelmäßig: ir, ser, ver, hacer, tener, estar, poder, poner, venir, querer, saber, decir, traer, dar, andar, romper, volver, abrir, morir
 
 ## Lokal starten
 
