@@ -1,17 +1,18 @@
 # Modo Pasado
 
-Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto** und **Pretérito Indefinido**.
+Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pretérito Indefinido** und **Pretérito Perfecto**.
 
 ## Funktionen
 
 - Zufällige Verbübungen ohne feste Runden
-- Tabelle für alle Personen in beiden Zeiten
+- Tabelle für alle Personen in allen drei Vergangenheitszeiten
 - Drei zufällige Aufgabenmodi:
   - nur der Infinitiv ist gegeben
   - drei zufällige Formen sind vorgegeben und gesperrt
   - Infinitiv plus eine zufällige Form sind gegeben
 - Umschaltbarer Modus "Nur unregelmäßige Verben"
-- Zeitform-Filter für beide Zeiten, nur Imperfecto oder nur Indefinido
+- Zeitform-Filter für alle Zeiten, nur Imperfecto, nur Indefinido oder nur Perfecto
+- Satzübungen zur Zeitwahl mit Multiple Choice, Lücke ausfüllen und Zeitform-Auswahl
 - Merkliste für schwere Verben mit dauerhaft gespeicherter Stern-Markierung
 - Filter "Nur markierte Verben" für gezieltes Wiederholen
 - Kleine Anzeige, ob das aktuelle Verb regelmäßig oder unregelmäßig ist

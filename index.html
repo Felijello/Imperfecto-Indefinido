@@ -17,13 +17,13 @@
           <span class="brand-mark" aria-hidden="true">MP</span>
           <span>
             <strong>Modo Pasado</strong>
-            <small>Imperfecto & Indefinido</small>
+            <small>Imperfecto, Indefinido & Perfecto</small>
           </span>
         </a>
         <nav class="nav-links" aria-label="Seitennavigation">
           <a href="#trainer">Üben</a>
+          <a href="#zeitwahl">Zeitwahl</a>
           <a href="#lernen">Lernen</a>
-          <a href="#regeln">Regeln</a>
         </nav>
         <label class="strict-toggle">
           <input id="strictAccents" type="checkbox" checked>
@@ -60,7 +60,7 @@
             <div class="practice-header">
               <div>
                 <h2 id="practiceTitle">Vergangenheiten trainieren</h2>
-                <p id="practiceSubtitle">Ergänze Imperfecto und Pretérito Indefinido für alle Personen.</p>
+                <p id="practiceSubtitle">Ergänze alle Vergangenheitszeiten für alle Personen.</p>
               </div>
               <div id="resultSummary" class="result-summary" aria-live="polite">Bereit</div>
             </div>
@@ -88,7 +88,7 @@
 
             <div id="trainingNotice" class="training-notice" hidden>
               <strong>Du trainierst aktuell nur die unregelmäßigen Formen.</strong>
-              <span id="relevantTenses">Imperfecto + Indefinido unregelmäßig</span>
+              <span id="relevantTenses">Imperfecto + Indefinido + Perfecto unregelmäßig</span>
             </div>
             <div id="markedNotice" class="training-notice marked-notice" hidden>
               <strong>Du hast noch keine Verben markiert.</strong>
@@ -99,8 +99,8 @@
               <fieldset class="tense-filter" aria-label="Zeitform auswählen">
                 <legend>Zeitform</legend>
                 <label>
-                  <input type="radio" name="tenseFilter" value="both" checked>
-                  <span>Beide</span>
+                  <input type="radio" name="tenseFilter" value="all" checked>
+                  <span>Alle Zeiten</span>
                 </label>
                 <label>
                   <input type="radio" name="tenseFilter" value="imperfect">
@@ -109,6 +109,10 @@
                 <label>
                   <input type="radio" name="tenseFilter" value="indefinido">
                   <span>Nur Indefinido</span>
+                </label>
+                <label>
+                  <input type="radio" name="tenseFilter" value="perfecto">
+                  <span>Nur Perfecto</span>
                 </label>
               </fieldset>
 
@@ -119,6 +123,7 @@
                       <th>Person</th>
                       <th id="imperfectHead">Imperfecto</th>
                       <th id="indefinidoHead">Pretérito Indefinido</th>
+                      <th id="perfectoHead">Pretérito Perfecto</th>
                     </tr>
                   </thead>
                   <tbody id="formsBody"></tbody>
@@ -134,11 +139,37 @@
           </section>
         </section>
 
+        <section id="zeitwahl" class="choice-section" aria-labelledby="choiceTitle">
+          <div class="choice-card">
+            <div class="choice-header">
+              <div>
+                <span>Zeitwahl trainieren</span>
+                <h2 id="choiceTitle">Welche Vergangenheit passt?</h2>
+                <p>Entscheide nach Signalwort, Kontext und Bedeutung.</p>
+              </div>
+              <div id="sentenceResult" class="result-summary" aria-live="polite">Bereit</div>
+            </div>
+
+            <div class="sentence-card">
+              <span id="sentenceType" class="sentence-type">Multiple Choice</span>
+              <p id="sentencePrompt" class="sentence-prompt">Ayer yo ___ al cine.</p>
+              <div id="sentenceOptions" class="sentence-options" aria-label="Antwortmöglichkeiten"></div>
+              <input id="sentenceInput" class="sentence-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" hidden>
+              <div id="sentenceFeedback" class="sentence-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="sentence-actions">
+              <button id="checkSentence" class="button primary" type="button">Prüfen</button>
+              <button id="nextSentence" class="button ghost" type="button">Nächster Satz</button>
+            </div>
+          </div>
+        </section>
+
         <section id="lernen" class="learning-section" aria-labelledby="learnTitle">
           <div class="section-heading">
             <span>Lernbereich</span>
-            <h2 id="learnTitle">Imperfecto oder Pretérito Indefinido?</h2>
-            <p>Die wichtigste Idee: Imperfecto beschreibt den Hintergrund. Indefinido erzählt abgeschlossene Ereignisse.</p>
+            <h2 id="learnTitle">Imperfecto, Indefinido oder Perfecto?</h2>
+            <p>Die wichtigste Idee: Imperfecto beschreibt den Hintergrund, Indefinido erzählt abgeschlossene Ereignisse, Perfecto verbindet Vergangenes mit der Gegenwart.</p>
           </div>
 
           <article class="marked-card" aria-labelledby="markedTitle">
@@ -197,6 +228,28 @@
                 <small>Danach schrieb ich einen Brief.</small>
               </div>
             </article>
+
+            <article class="learn-card">
+              <h3>Wann benutzt man Pretérito Perfecto?</h3>
+              <p>Das Pretérito Perfecto benutzt du, wenn eine vergangene Handlung noch mit der Gegenwart verbunden ist oder für Erfahrungen bis jetzt.</p>
+              <ul>
+                <li><strong>Verbindung zur Gegenwart:</strong> das Ergebnis ist jetzt noch wichtig.</li>
+                <li><strong>Aktuelle Zeiträume:</strong> heute, diese Woche oder dieses Jahr.</li>
+                <li><strong>Erfahrungen:</strong> was jemand schon, noch nicht oder nie gemacht hat.</li>
+              </ul>
+              <div class="example">
+                <span>Hoy he estudiado mucho.</span>
+                <small>Heute habe ich viel gelernt.</small>
+              </div>
+              <div class="example">
+                <span>Esta semana hemos escrito textos.</span>
+                <small>Diese Woche haben wir Texte geschrieben.</small>
+              </div>
+              <div class="example">
+                <span>Nunca he visto esa película.</span>
+                <small>Ich habe diesen Film noch nie gesehen.</small>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -215,6 +268,10 @@
             <article class="info-card">
               <h3>Signalwörter Indefinido</h3>
               <p>ayer, anoche, la semana pasada, el año pasado, un día, de repente, entonces, después</p>
+            </article>
+            <article class="info-card">
+              <h3>Signalwörter Perfecto</h3>
+              <p>hoy, esta semana, este año, ya, todavía no, nunca, alguna vez</p>
             </article>
           </div>
 
@@ -263,6 +320,17 @@
                 <div><dt>ellos/ellas/ustedes</dt><dd>-ieron</dd></div>
               </dl>
             </article>
+            <article class="rule-card">
+              <h3>Perfecto</h3>
+              <dl>
+                <div><dt>yo</dt><dd>he + Partizip</dd></div>
+                <div><dt>tú</dt><dd>has + Partizip</dd></div>
+                <div><dt>él/ella/usted</dt><dd>ha + Partizip</dd></div>
+                <div><dt>nosotros/as</dt><dd>hemos + Partizip</dd></div>
+                <div><dt>vosotros/as</dt><dd>habéis + Partizip</dd></div>
+                <div><dt>ellos/ellas/ustedes</dt><dd>han + Partizip</dd></div>
+              </dl>
+            </article>
           </div>
 
           <article class="stem-card">
@@ -282,6 +350,22 @@
               <span>andar → anduv-</span>
             </div>
             <p class="note">Bei <strong>decir</strong> und <strong>traer</strong> fällt das i vor <strong>-eron</strong> weg: <strong>dijeron</strong>, <strong>trajeron</strong>.</p>
+          </article>
+
+          <article class="stem-card">
+            <h3>Unregelmäßige Partizipien im Perfecto</h3>
+            <p>Für das Perfecto nimmst du eine Form von <strong>haber</strong> und danach das Partizip. Regelmäßig wird aus <strong>-ar</strong> die Endung <strong>-ado</strong>, aus <strong>-er/-ir</strong> die Endung <strong>-ido</strong>.</p>
+            <div class="stem-list" aria-label="Unregelmäßige Partizipien">
+              <span>hacer → hecho</span>
+              <span>decir → dicho</span>
+              <span>ver → visto</span>
+              <span>escribir → escrito</span>
+              <span>romper → roto</span>
+              <span>volver → vuelto</span>
+              <span>poner → puesto</span>
+              <span>abrir → abierto</span>
+              <span>morir → muerto</span>
+            </div>
           </article>
         </section>
       </main>

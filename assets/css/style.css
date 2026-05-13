@@ -125,7 +125,7 @@ a {
 
 .nav-links {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 5px;
   padding: 4px;
   border: 1px solid var(--line);
@@ -539,7 +539,7 @@ a {
 
 .tense-filter {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px;
   margin: 0 0 12px;
   padding: 4px;
@@ -654,6 +654,10 @@ a {
 }
 
 .input-cell[data-tense-cell="indefinido"] {
+  grid-column: 2;
+}
+
+.input-cell[data-tense-cell="perfecto"] {
   grid-column: 2;
 }
 
@@ -801,8 +805,135 @@ a {
 }
 
 .learning-section,
+.choice-section,
 .rules-section {
   padding: 34px 0 0;
+}
+
+.choice-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(25, 31, 42, 0.9);
+  box-shadow: var(--shadow);
+}
+
+.choice-header {
+  display: grid;
+  gap: 10px;
+}
+
+.choice-header span,
+.sentence-type {
+  display: block;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.choice-header h2 {
+  margin: 5px 0 0;
+  font-size: clamp(1.25rem, 5vw, 1.75rem);
+  line-height: 1.15;
+}
+
+.choice-header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.sentence-card {
+  display: grid;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sentence-prompt {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.08rem, 4.8vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.sentence-options {
+  display: grid;
+  gap: 8px;
+}
+
+.sentence-option,
+.sentence-input {
+  width: 100%;
+  min-height: var(--tap);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--field);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.sentence-option {
+  padding: 0 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sentence-option.is-selected {
+  border-color: rgba(123, 224, 184, 0.6);
+  background: rgba(123, 224, 184, 0.08);
+}
+
+.sentence-option.correct,
+.sentence-input.correct {
+  border-color: rgba(120, 222, 163, 0.72);
+  background: rgba(120, 222, 163, 0.1);
+}
+
+.sentence-option.incorrect,
+.sentence-input.incorrect {
+  border-color: rgba(242, 118, 134, 0.78);
+  background: rgba(242, 118, 134, 0.1);
+}
+
+.sentence-input {
+  padding: 0 12px;
+  outline: none;
+}
+
+.sentence-input:focus {
+  border-color: rgba(123, 224, 184, 0.78);
+  box-shadow: 0 0 0 4px rgba(123, 224, 184, 0.12);
+}
+
+.sentence-input[hidden] {
+  display: none;
+}
+
+.sentence-feedback {
+  min-height: 1.2rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.sentence-feedback.is-success {
+  color: var(--success);
+}
+
+.sentence-feedback.has-errors {
+  color: #ffadb7;
+}
+
+.sentence-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .section-heading {
@@ -1002,7 +1133,7 @@ a {
 
 @media (min-width: 430px) {
   .verb-table tr {
-    grid-template-columns: minmax(5.8rem, 0.62fr) repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(5.8rem, 0.62fr) repeat(3, minmax(0, 1fr));
   }
 
   .input-cell[data-tense-cell="imperfect"] {
@@ -1011,6 +1142,10 @@ a {
 
   .input-cell[data-tense-cell="indefinido"] {
     grid-column: 3;
+  }
+
+  .input-cell[data-tense-cell="perfecto"] {
+    grid-column: 4;
   }
 }
 
@@ -1027,7 +1162,11 @@ a {
   }
 
   .nav-links {
-    min-width: 260px;
+    min-width: 330px;
+  }
+
+  .tense-filter {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .strict-toggle {
@@ -1051,6 +1190,23 @@ a {
   .practice-header {
     grid-template-columns: 1fr auto;
     align-items: start;
+  }
+
+  .choice-card {
+    padding: 18px;
+  }
+
+  .choice-header {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+
+  .sentence-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sentence-option {
+    text-align: center;
   }
 
   .mode-bar {

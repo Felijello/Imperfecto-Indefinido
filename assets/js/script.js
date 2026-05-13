@@ -33,6 +33,28 @@ const indefinidoIrregulars = {
   andar: ["anduve", "anduviste", "anduvo", "anduvimos", "anduvisteis", "anduvieron"],
 };
 
+const perfectAuxiliaries = ["he", "has", "ha", "hemos", "habéis", "han"];
+
+const irregularParticiples = {
+  hacer: "hecho",
+  decir: "dicho",
+  ver: "visto",
+  escribir: "escrito",
+  romper: "roto",
+  volver: "vuelto",
+  poner: "puesto",
+  abrir: "abierto",
+  morir: "muerto",
+};
+
+const tenseLabels = {
+  imperfect: "Imperfecto",
+  indefinido: "Indefinido",
+  perfecto: "Perfecto",
+};
+
+const allTenses = ["imperfect", "indefinido", "perfecto"];
+
 const allVerbs = [
   ...regularVerbs,
   ...Object.keys(imperfectIrregulars),
@@ -42,6 +64,7 @@ const allVerbs = [
 const irregularVerbs = [
   ...Object.keys(imperfectIrregulars),
   ...Object.keys(indefinidoIrregulars),
+  ...Object.keys(irregularParticiples).filter((verb) => allVerbs.includes(verb)),
 ].filter((verb, index, list) => list.indexOf(verb) === index);
 
 const stemHints = {
@@ -56,6 +79,11 @@ const stemHints = {
   decir: "decir → dij-",
   traer: "traer → traj-",
   andar: "andar → anduv-",
+  escribir: "Partizip: escrito",
+  romper: "Partizip: roto",
+  volver: "Partizip: vuelto",
+  abrir: "Partizip: abierto",
+  morir: "Partizip: muerto",
 };
 
 const endings = {
@@ -97,13 +125,19 @@ const state = {
   sessionCount: 0,
   lockedCells: [],
   autoFilledCells: [],
-  activeTenses: ["imperfect", "indefinido"],
-  tenseFilter: "both",
+  activeTenses: [...allTenses],
+  tenseFilter: "all",
   taskMode: taskModes[0],
   irregularOnly: false,
   markedOnly: false,
   markedVerbs: loadMarkedVerbs(),
 };
+
+function getParticiple(verb) {
+  if (irregularParticiples[verb]) return irregularParticiples[verb];
+  const group = getGroup(verb);
+  return `${getStem(verb)}${group === "ar" ? "ado" : "ido"}`;
+}
 
 const form = document.querySelector("#practiceForm");
 const formsBody = document.querySelector("#formsBody");
@@ -128,12 +162,96 @@ const markedNotice = document.querySelector("#markedNotice");
 const relevantTenses = document.querySelector("#relevantTenses");
 const imperfectHead = document.querySelector("#imperfectHead");
 const indefinidoHead = document.querySelector("#indefinidoHead");
+const perfectoHead = document.querySelector("#perfectoHead");
 const tenseFilterInputs = document.querySelectorAll('input[name="tenseFilter"]');
 const showSolutionButton = document.querySelector("#showSolution");
 const nextButton = document.querySelector("#nextVerb");
 const markedList = document.querySelector("#markedList");
 const markedOverviewText = document.querySelector("#markedOverviewText");
 const clearMarked = document.querySelector("#clearMarked");
+const sentenceType = document.querySelector("#sentenceType");
+const sentencePrompt = document.querySelector("#sentencePrompt");
+const sentenceOptions = document.querySelector("#sentenceOptions");
+const sentenceInput = document.querySelector("#sentenceInput");
+const sentenceFeedback = document.querySelector("#sentenceFeedback");
+const sentenceResult = document.querySelector("#sentenceResult");
+const checkSentenceButton = document.querySelector("#checkSentence");
+const nextSentenceButton = document.querySelector("#nextSentence");
+
+const sentenceExercises = [
+  {
+    type: "choice",
+    prompt: "Ayer yo ___ al cine.",
+    answer: "indefinido",
+    form: "fui",
+    options: ["iba", "fui", "he ido"],
+    explanation: "Indefinido passt hier, weil „ayer“ einen abgeschlossenen Zeitpunkt in der Vergangenheit nennt.",
+  },
+  {
+    type: "choice",
+    prompt: "Cuando era niño, siempre ___ fútbol.",
+    answer: "imperfect",
+    form: "jugaba",
+    options: ["jugué", "jugaba", "he jugado"],
+    explanation: "Imperfecto passt hier, weil es um eine wiederholte Gewohnheit in der Kindheit geht.",
+  },
+  {
+    type: "fill",
+    prompt: "Esta semana yo ___ mucho.",
+    answer: "perfecto",
+    form: "he estudiado",
+    explanation: "Perfecto passt hier, weil „esta semana“ ein Zeitraum ist, der noch mit der Gegenwart verbunden ist.",
+  },
+  {
+    type: "tense",
+    prompt: "Mientras ella estudiaba, yo hice la tarea.",
+    answer: "imperfect",
+    form: "estudiaba",
+    explanation: "Imperfecto beschreibt hier die laufende Hintergrundhandlung, während eine abgeschlossene Handlung passiert.",
+  },
+  {
+    type: "choice",
+    prompt: "Anoche nosotros ___ en casa.",
+    answer: "indefinido",
+    form: "comimos",
+    options: ["comíamos", "comimos", "hemos comido"],
+    explanation: "Indefinido passt, weil „anoche“ einen klar abgeschlossenen Zeitpunkt markiert.",
+  },
+  {
+    type: "fill",
+    prompt: "Todavía no ___ el libro.",
+    answer: "perfecto",
+    form: "he leído",
+    explanation: "Perfecto passt, weil „todavía no“ beschreibt, was bis jetzt noch nicht passiert ist.",
+  },
+  {
+    type: "tense",
+    prompt: "De niño, mi hermano siempre veía dibujos.",
+    answer: "imperfect",
+    form: "veía",
+    explanation: "Imperfecto passt, weil der Satz eine frühere Gewohnheit beschreibt.",
+  },
+  {
+    type: "choice",
+    prompt: "Entonces ella ___ la puerta y entró.",
+    answer: "indefinido",
+    form: "abrió",
+    options: ["abría", "abrió", "ha abierto"],
+    explanation: "Indefinido passt, weil mehrere abgeschlossene Ereignisse nacheinander erzählt werden.",
+  },
+  {
+    type: "fill",
+    prompt: "Nunca nosotros ___ en Valencia.",
+    answer: "perfecto",
+    form: "hemos vivido",
+    explanation: "Perfecto passt, weil „nunca“ hier eine Erfahrung bis heute ausdrückt.",
+  },
+];
+
+const sentenceState = {
+  current: null,
+  selected: "",
+};
 
 function loadMarkedVerbs() {
   try {
@@ -189,9 +307,11 @@ function conjugateRegular(verb, tense) {
 }
 
 function getForms(verb) {
+  const participle = getParticiple(verb);
   return {
     imperfect: imperfectIrregulars[verb] || conjugateRegular(verb, "imperfect"),
     indefinido: indefinidoIrregulars[verb] || conjugateRegular(verb, "indefinido"),
+    perfecto: perfectAuxiliaries.map((auxiliary) => `${auxiliary} ${participle}`),
   };
 }
 
@@ -212,7 +332,8 @@ function randomFrom(list) {
 function getSelectedTenses() {
   if (state.tenseFilter === "imperfect") return ["imperfect"];
   if (state.tenseFilter === "indefinido") return ["indefinido"];
-  return ["imperfect", "indefinido"];
+  if (state.tenseFilter === "perfecto") return ["perfecto"];
+  return [...allTenses];
 }
 
 function getVerbPool() {
@@ -239,6 +360,7 @@ function getIrregularTenses(verb) {
   return [
     imperfectIrregulars[verb] ? "imperfect" : null,
     indefinidoIrregulars[verb] ? "indefinido" : null,
+    irregularParticiples[verb] ? "perfecto" : null,
   ].filter(Boolean);
 }
 
@@ -272,11 +394,9 @@ function makeLockedCells(forms, mode, activeTenses) {
 }
 
 function makeAutoFilledCells(forms, activeTenses) {
-  if (!state.irregularOnly || state.tenseFilter !== "both") return [];
+  if (!state.irregularOnly || state.tenseFilter !== "all") return [];
 
-  const inactiveTenses = ["imperfect", "indefinido"].filter(
-    (tense) => !activeTenses.includes(tense)
-  );
+  const inactiveTenses = allTenses.filter((tense) => !activeTenses.includes(tense));
 
   return getCellsForTenses(inactiveTenses).map(({ tense, personIndex }) => ({
     tense,
@@ -300,6 +420,11 @@ function renderRows() {
         <label class="sr-only" for="indefinido-${index}">Indefinido ${person}</label>
         <input class="verb-input" id="indefinido-${index}" data-tense="indefinido" data-index="${index}" type="text" inputmode="text" autocapitalize="none" spellcheck="false">
         <span class="answer-note" id="note-indefinido-${index}"></span>
+      </td>
+      <td class="input-cell tense-cell" data-tense-cell="perfecto" data-label="Perfecto">
+        <label class="sr-only" for="perfecto-${index}">Perfecto ${person}</label>
+        <input class="verb-input" id="perfecto-${index}" data-tense="perfecto" data-index="${index}" type="text" inputmode="text" autocapitalize="none" spellcheck="false">
+        <span class="answer-note" id="note-perfecto-${index}"></span>
       </td>
     `;
     formsBody.append(row);
@@ -325,14 +450,14 @@ function clearFeedback() {
 }
 
 function tenseLabel(tense) {
-  return tense === "imperfect" ? "Imperfecto" : "Indefinido";
+  return tenseLabels[tense] || tense;
 }
 
 function tenseScopeText() {
   if (state.activeTenses.length === 1) {
-    return state.activeTenses[0] === "imperfect" ? "Imperfecto" : "Indefinido";
+    return tenseLabel(state.activeTenses[0]);
   }
-  return "Imperfecto und Indefinido";
+  return "alle Vergangenheitszeiten";
 }
 
 function updatePracticeCopy() {
@@ -409,6 +534,8 @@ function updateActiveColumns() {
   imperfectHead.classList.toggle("is-inactive", !activeSet.has("imperfect"));
   indefinidoHead.classList.toggle("is-active", activeSet.has("indefinido"));
   indefinidoHead.classList.toggle("is-inactive", !activeSet.has("indefinido"));
+  perfectoHead.classList.toggle("is-active", activeSet.has("perfecto"));
+  perfectoHead.classList.toggle("is-inactive", !activeSet.has("perfecto"));
 }
 
 function updateTrainingNotice() {
@@ -419,13 +546,10 @@ function updateTrainingNotice() {
   }
 
   trainingNotice.hidden = false;
-  if (state.activeTenses.length === 2) {
-    relevantTenses.textContent = "Imperfecto + Indefinido unregelmäßig";
-  } else if (state.activeTenses[0] === "imperfect") {
-    relevantTenses.textContent = "Nur Imperfecto unregelmäßig";
-  } else {
-    relevantTenses.textContent = "Nur Indefinido unregelmäßig";
-  }
+  relevantTenses.textContent =
+    state.activeTenses.length === 1
+      ? `Nur ${tenseLabel(state.activeTenses[0])} unregelmäßig`
+      : `${state.activeTenses.map(tenseLabel).join(" + ")} unregelmäßig`;
 }
 
 function getMarkedNoticeText() {
@@ -646,6 +770,78 @@ function checkAnswers(showAnswers = false) {
   resultSummary.textContent = `${correct}/${total} richtig`;
 }
 
+function renderSentenceExercise() {
+  const exercise = randomFrom(sentenceExercises);
+  sentenceState.current = exercise;
+  sentenceState.selected = "";
+
+  sentenceType.textContent =
+    exercise.type === "fill"
+      ? "Lücke ausfüllen"
+      : exercise.type === "tense"
+        ? "Zeitform auswählen"
+        : "Multiple Choice";
+  sentencePrompt.textContent = exercise.prompt;
+  sentenceOptions.innerHTML = "";
+  sentenceFeedback.textContent = "";
+  sentenceFeedback.className = "sentence-feedback";
+  sentenceResult.className = "result-summary";
+  sentenceResult.textContent = "Bereit";
+  sentenceInput.value = "";
+  sentenceInput.hidden = exercise.type !== "fill";
+
+  if (exercise.type === "fill") {
+    sentenceInput.placeholder = "z. B. he estudiado";
+    return;
+  }
+
+  const options =
+    exercise.type === "tense"
+      ? ["imperfect", "indefinido", "perfecto"]
+      : exercise.options;
+
+  options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sentence-option";
+    button.dataset.value = option;
+    button.textContent = exercise.type === "tense" ? tenseLabel(option) : option;
+    sentenceOptions.append(button);
+  });
+}
+
+function checkSentenceExercise() {
+  const exercise = sentenceState.current;
+  if (!exercise) return;
+
+  const rawAnswer = exercise.type === "fill" ? sentenceInput.value : sentenceState.selected;
+  const expected = exercise.type === "fill" ? exercise.form : exercise.type === "tense" ? exercise.answer : exercise.form;
+  const correct = exercise.type === "tense"
+    ? rawAnswer === exercise.answer
+    : isCorrect(rawAnswer, expected);
+
+  sentenceOptions.querySelectorAll(".sentence-option").forEach((button) => {
+    const expectedValue = exercise.type === "tense" ? exercise.answer : exercise.form;
+    button.classList.toggle("correct", button.dataset.value === expectedValue);
+    button.classList.toggle(
+      "incorrect",
+      button.dataset.value === sentenceState.selected && button.dataset.value !== expectedValue
+    );
+  });
+
+  if (exercise.type === "fill") {
+    sentenceInput.classList.toggle("correct", correct);
+    sentenceInput.classList.toggle("incorrect", !correct);
+  }
+
+  sentenceResult.className = `result-summary ${correct ? "is-success" : "has-errors"}`;
+  sentenceResult.textContent = correct ? "Richtig" : "Nochmal anschauen";
+  sentenceFeedback.className = `sentence-feedback ${correct ? "is-success" : "has-errors"}`;
+  sentenceFeedback.textContent = correct
+    ? exercise.explanation
+    : `${exercise.explanation} Richtige Antwort: ${exercise.type === "tense" ? tenseLabel(exercise.answer) : exercise.form}.`;
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   checkAnswers(false);
@@ -679,6 +875,26 @@ clearMarked.addEventListener("click", () => {
     updateMarkedNotice();
   }
 });
+sentenceOptions.addEventListener("click", (event) => {
+  const button = event.target.closest(".sentence-option");
+  if (!button) return;
+  sentenceState.selected = button.dataset.value;
+  sentenceOptions.querySelectorAll(".sentence-option").forEach((option) => {
+    option.classList.toggle("is-selected", option === button);
+    option.classList.remove("correct", "incorrect");
+  });
+  sentenceFeedback.textContent = "";
+  sentenceFeedback.className = "sentence-feedback";
+  sentenceResult.className = "result-summary";
+  sentenceResult.textContent = "Ausgewählt";
+});
+sentenceInput.addEventListener("input", () => {
+  sentenceInput.classList.remove("correct", "incorrect");
+  sentenceFeedback.textContent = "";
+  sentenceFeedback.className = "sentence-feedback";
+});
+checkSentenceButton.addEventListener("click", checkSentenceExercise);
+nextSentenceButton.addEventListener("click", renderSentenceExercise);
 tenseFilterInputs.forEach((input) => {
   input.addEventListener("change", () => {
     state.tenseFilter = input.value;
@@ -687,3 +903,4 @@ tenseFilterInputs.forEach((input) => {
 });
 
 setExercise();
+renderSentenceExercise();
