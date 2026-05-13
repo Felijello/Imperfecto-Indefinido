@@ -1182,6 +1182,60 @@ tenseToggleInputs.forEach((input) => {
   });
 });
 
+const mobileViewport = window.matchMedia("(max-width: 699px)");
+let focusScrollFrame = 0;
+let mobileFocusAssistReady = false;
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function scrollActiveFieldIntoView(target = document.activeElement) {
+  if (!mobileFocusAssistReady) return;
+  if (!mobileViewport.matches || !target?.matches?.("input, textarea")) return;
+
+  window.cancelAnimationFrame(focusScrollFrame);
+  focusScrollFrame = window.requestAnimationFrame(() => {
+    const anchor = target.closest("tr, .sentence-card, .exam-task") || target;
+    anchor.scrollIntoView({
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  });
+}
+
+function updateMobileKeyboardInset() {
+  if (!window.visualViewport || !mobileViewport.matches) {
+    document.documentElement.style.setProperty("--mobile-keyboard-inset", "0px");
+    return;
+  }
+
+  const inset = Math.max(
+    0,
+    window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop
+  );
+  document.documentElement.style.setProperty("--mobile-keyboard-inset", `${Math.round(inset)}px`);
+  scrollActiveFieldIntoView();
+}
+
+document.addEventListener("focusin", (event) => {
+  scrollActiveFieldIntoView(event.target);
+});
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateMobileKeyboardInset, { passive: true });
+  window.visualViewport.addEventListener("scroll", updateMobileKeyboardInset, { passive: true });
+}
+
+window.addEventListener("orientationchange", () => {
+  window.setTimeout(updateMobileKeyboardInset, 220);
+}, { passive: true });
+
+updateMobileKeyboardInset();
 syncTenseToggles();
 setExercise();
 renderSentenceExercise();
+window.setTimeout(() => {
+  mobileFocusAssistReady = true;
+}, 120);
