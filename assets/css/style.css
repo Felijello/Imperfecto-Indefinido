@@ -878,8 +878,10 @@ a {
 
 .sentence-mode {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px;
+  width: min(100%, 760px);
+  margin-inline: auto;
   padding: 4px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -968,6 +970,11 @@ a {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+.exam-card .sentence-actions:has(#startExam:not([hidden])) {
+  grid-template-columns: minmax(0, min(100%, 540px));
+  justify-content: center;
 }
 
 .exam-task[hidden],
@@ -1211,23 +1218,22 @@ a {
   }
 
   .verb-table tr {
-    grid-template-columns: minmax(4.35rem, 0.42fr) repeat(var(--active-tense-count, 1), minmax(0, 1fr));
-  }
-
-  .practice-panel[data-active-count="2"] .input-cell,
-  .practice-panel[data-active-count="3"] .input-cell {
-    grid-column: auto;
-  }
-
-  .practice-panel[data-active-count="3"] .verb-table tr {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--active-tense-count, 1), minmax(0, 1fr));
     gap: 7px;
     padding: 10px;
   }
 
-  .practice-panel[data-active-count="3"] .person-cell {
+  .person-cell {
     grid-column: 1 / -1;
+    align-self: start;
     padding-bottom: 1px;
+    font-size: 0.82rem;
+  }
+
+  .practice-panel[data-active-count="1"] .input-cell,
+  .practice-panel[data-active-count="2"] .input-cell,
+  .practice-panel[data-active-count="3"] .input-cell {
+    grid-column: auto;
   }
 
   .practice-panel[data-active-count="3"] .input-cell::before {
