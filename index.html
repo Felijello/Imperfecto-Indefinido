@@ -150,6 +150,12 @@
               <div id="sentenceResult" class="result-summary" aria-live="polite">Bereit</div>
             </div>
 
+            <div class="sentence-mode" aria-label="Satzübungsmodus">
+              <button class="is-active" type="button" data-sentence-mode="all">Alle Sätze</button>
+              <button type="button" data-sentence-mode="signal">Signalwörter</button>
+              <button type="button" data-sentence-mode="mistakes">Fehler wiederholen</button>
+            </div>
+
             <div class="sentence-card">
               <span id="sentenceType" class="sentence-type">Lücke + Auswahl</span>
               <p id="sentencePrompt" class="sentence-prompt">Ayer yo ___ al cine.</p>
@@ -161,6 +167,49 @@
             <div class="sentence-actions">
               <button id="checkSentence" class="button primary" type="button">Prüfen</button>
               <button id="nextSentence" class="button ghost" type="button">Nächster Satz</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="schularbeit" class="exam-section" aria-labelledby="examTitle">
+          <div class="exam-card">
+            <div class="choice-header">
+              <div>
+                <span>Schularbeit üben</span>
+                <h2 id="examTitle">Gemischter Prüfungsmodus</h2>
+                <p>10 kurze Aufgaben zu Verbformen, Zeitwahl, Signalwörtern und Mini-Kontexten.</p>
+              </div>
+              <div id="examProgress" class="result-summary">Bereit</div>
+            </div>
+
+            <div id="examTask" class="sentence-card exam-task" hidden>
+              <span id="examType" class="sentence-type">Aufgabe</span>
+              <p id="examPrompt" class="sentence-prompt"></p>
+              <div id="examOptions" class="sentence-options" aria-label="Antwortmöglichkeiten"></div>
+              <input id="examInput" class="sentence-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" hidden>
+              <div id="examFeedback" class="sentence-feedback" aria-live="polite"></div>
+            </div>
+
+            <div id="examSummary" class="exam-summary" hidden></div>
+
+            <div class="sentence-actions">
+              <button id="startExam" class="button primary" type="button">Schularbeit üben</button>
+              <button id="checkExam" class="button secondary" type="button" hidden>Prüfen</button>
+              <button id="nextExam" class="button ghost" type="button" hidden>Weiter</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="review-section" aria-labelledby="reviewTitle">
+          <div class="review-card">
+            <div>
+              <span class="marked-kicker">Nochmal üben</span>
+              <h2 id="reviewTitle">Schwierige Aufgaben</h2>
+              <p id="reviewStatus">Fehler aus Verbformen und Satzübungen werden hier automatisch gesammelt.</p>
+            </div>
+            <div class="review-actions">
+              <button id="practiceMistakes" class="button ghost small" type="button">Fehler wiederholen</button>
+              <button id="clearMistakes" class="button danger small" type="button">Alle Fehler löschen</button>
             </div>
           </div>
         </section>

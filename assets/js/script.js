@@ -121,6 +121,8 @@ const taskModes = [
 ];
 
 const markedStorageKey = "modoPasado.markedVerbs";
+const mistakeStorageKey = "modoPasado.mistakes";
+const mistakeMasteryTarget = 2;
 
 const state = {
   currentVerb: "",
@@ -133,6 +135,7 @@ const state = {
   irregularOnly: false,
   markedOnly: false,
   markedVerbs: loadMarkedVerbs(),
+  mistakes: loadMistakes(),
 };
 
 function getParticiple(verb) {
@@ -179,6 +182,21 @@ const sentenceFeedback = document.querySelector("#sentenceFeedback");
 const sentenceResult = document.querySelector("#sentenceResult");
 const checkSentenceButton = document.querySelector("#checkSentence");
 const nextSentenceButton = document.querySelector("#nextSentence");
+const sentenceModeButtons = document.querySelectorAll("[data-sentence-mode]");
+const examProgress = document.querySelector("#examProgress");
+const examTask = document.querySelector("#examTask");
+const examType = document.querySelector("#examType");
+const examPrompt = document.querySelector("#examPrompt");
+const examOptions = document.querySelector("#examOptions");
+const examInput = document.querySelector("#examInput");
+const examFeedback = document.querySelector("#examFeedback");
+const examSummary = document.querySelector("#examSummary");
+const startExamButton = document.querySelector("#startExam");
+const checkExamButton = document.querySelector("#checkExam");
+const nextExamButton = document.querySelector("#nextExam");
+const reviewStatus = document.querySelector("#reviewStatus");
+const practiceMistakesButton = document.querySelector("#practiceMistakes");
+const clearMistakesButton = document.querySelector("#clearMistakes");
 
 const sentenceExercises = [
   {
@@ -258,11 +276,107 @@ const sentenceExercises = [
     options: ["escribiste", "escribías", "has escrito"],
     explanation: "Has escrito ist richtig, weil „hoy“ mit der Gegenwart verbunden ist.",
   },
+  {
+    prompt: "Antes yo ___ muchos videojuegos con mis amigos.",
+    answer: "imperfect",
+    form: "jugaba",
+    options: ["jugué", "jugaba", "he jugado"],
+    explanation: "Jugaba ist richtig, weil „antes“ eine frühere Gewohnheit beschreibt.",
+    theme: "tiempo libre",
+  },
+  {
+    prompt: "El verano pasado nosotros ___ a España.",
+    answer: "indefinido",
+    form: "viajamos",
+    options: ["viajábamos", "viajamos", "hemos viajado"],
+    explanation: "Viajamos ist richtig, weil „el verano pasado“ abgeschlossen ist.",
+    theme: "viajes",
+  },
+  {
+    prompt: "Esta semana yo ___ mucho para el examen.",
+    answer: "perfecto",
+    form: "he estudiado",
+    options: ["estudié", "estudiaba", "he estudiado"],
+    explanation: "He estudiado ist richtig, weil „esta semana“ noch zur Gegenwart gehört.",
+    theme: "schularbeit",
+  },
+  {
+    prompt: "Mientras mi madre ___ la cena, yo hacía la tarea.",
+    answer: "imperfect",
+    form: "preparaba",
+    options: ["preparó", "preparaba", "ha preparado"],
+    explanation: "Preparaba ist richtig, weil „mientras“ eine Hintergrundhandlung beschreibt.",
+    theme: "tareas domésticas",
+  },
+  {
+    prompt: "Un día mis amigos y yo ___ un partido importante.",
+    answer: "indefinido",
+    form: "ganamos",
+    options: ["ganábamos", "ganamos", "hemos ganado"],
+    explanation: "Ganamos ist richtig, weil „un día“ ein einzelnes Ereignis einleitet.",
+    theme: "deportes",
+  },
+  {
+    prompt: "Cada día mi hermana ___ su habitación.",
+    answer: "imperfect",
+    form: "ordenaba",
+    options: ["ordenó", "ordenaba", "ha ordenado"],
+    explanation: "Ordenaba ist richtig, weil „cada día“ eine wiederholte Handlung beschreibt.",
+    theme: "tareas domésticas",
+  },
+  {
+    prompt: "Ya nosotros ___ las maletas.",
+    answer: "perfecto",
+    form: "hemos hecho",
+    options: ["hicimos", "hacíamos", "hemos hecho"],
+    explanation: "Hemos hecho ist richtig, weil „ya“ hier sagt, was bis jetzt erledigt ist.",
+    theme: "viajes",
+  },
+  {
+    prompt: "De repente el profesor ___ la puerta.",
+    answer: "indefinido",
+    form: "abrió",
+    options: ["abría", "abrió", "ha abierto"],
+    explanation: "Abrió ist richtig, weil „de repente“ ein plötzliches abgeschlossenes Ereignis markiert.",
+    theme: "mini-contexto",
+  },
+  {
+    prompt: "Normalmente nosotros ___ al fútbol después de clase.",
+    answer: "imperfect",
+    form: "jugábamos",
+    options: ["jugamos", "jugábamos", "hemos jugado"],
+    explanation: "Jugábamos ist richtig, weil „normalmente“ eine Gewohnheit beschreibt.",
+    theme: "deportes",
+  },
+  {
+    prompt: "Este año yo ___ muchos países en clase.",
+    answer: "perfecto",
+    form: "he conocido",
+    options: ["conocí", "conocía", "he conocido"],
+    explanation: "He conocido ist richtig, weil „este año“ ein Zeitraum mit Gegenwartsbezug ist.",
+    theme: "países",
+  },
 ];
+
+sentenceExercises.forEach((exercise, index) => {
+  exercise.key = exercise.key || `sentence-${index}`;
+  exercise.category = exercise.category || "signal";
+});
 
 const sentenceState = {
   current: null,
   selected: "",
+  mode: "all",
+};
+
+const examState = {
+  active: false,
+  tasks: [],
+  index: 0,
+  score: 0,
+  answered: false,
+  selected: "",
+  misses: [],
 };
 
 function loadMarkedVerbs() {
@@ -272,6 +386,66 @@ function loadMarkedVerbs() {
   } catch {
     return [];
   }
+}
+
+function loadMistakes() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(mistakeStorageKey) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveMistakes() {
+  localStorage.setItem(mistakeStorageKey, JSON.stringify(state.mistakes));
+}
+
+function mistakeKey(kind, data) {
+  if (data.key) return `${kind}:${data.key}`;
+  if (kind === "verb") return `verb:${data.verb}:${data.tense}:${data.personIndex}`;
+  return `${kind}:${data.prompt || data.form}`;
+}
+
+function recordMistake(kind, data) {
+  const key = mistakeKey(kind, data);
+  const existing = state.mistakes.find((mistake) => mistake.key === key);
+  const payload = { ...data };
+
+  if (existing) {
+    existing.data = payload;
+    existing.correctStreak = 0;
+    existing.count += 1;
+  } else {
+    state.mistakes.push({ key, kind, data: payload, correctStreak: 0, count: 1 });
+  }
+
+  saveMistakes();
+  renderMistakeOverview();
+}
+
+function recordCorrect(kind, data) {
+  const key = mistakeKey(kind, data);
+  const existing = state.mistakes.find((mistake) => mistake.key === key);
+  if (!existing) return;
+
+  existing.correctStreak += 1;
+  if (existing.correctStreak >= mistakeMasteryTarget) {
+    state.mistakes = state.mistakes.filter((mistake) => mistake.key !== key);
+  }
+
+  saveMistakes();
+  renderMistakeOverview();
+}
+
+function renderMistakeOverview() {
+  const count = state.mistakes.length;
+  reviewStatus.textContent =
+    count === 0
+      ? "Aktuell sind keine schwierigen Aufgaben gespeichert."
+      : `${count} schwierige Aufgabe${count === 1 ? "" : "n"} gespeichert. Nach ${mistakeMasteryTarget} richtigen Wiederholungen verschwindet ein Fehler automatisch.`;
+  practiceMistakesButton.disabled = count === 0;
+  clearMistakesButton.disabled = count === 0;
 }
 
 function saveMarkedVerbs() {
@@ -771,10 +945,24 @@ function checkAnswers(showAnswers = false) {
       input.classList.add("correct");
       note.textContent = input.classList.contains("prefilled") ? "Vorgegeben" : "Richtig";
       correct += 1;
+      if (!input.classList.contains("prefilled")) {
+        recordCorrect("verb", {
+          verb: state.currentVerb,
+          tense,
+          personIndex: index,
+        });
+      }
     } else {
       input.classList.add("incorrect");
       note.classList.add("is-error");
       note.textContent = input.value.trim() ? `Erwartet: ${expected}` : "Noch leer";
+      recordMistake("verb", {
+        verb: state.currentVerb,
+        tense,
+        personIndex: index,
+        expected,
+        label: `${state.currentVerb} · ${persons[index]} · ${tenseLabel(tense)}`,
+      });
     }
   });
 
@@ -783,7 +971,19 @@ function checkAnswers(showAnswers = false) {
 }
 
 function renderSentenceExercise() {
-  const exercise = randomFrom(sentenceExercises);
+  const pool = getSentencePool();
+  if (pool.length === 0) {
+    sentenceState.current = null;
+    sentencePrompt.textContent = "Keine Fehler gespeichert.";
+    sentenceOptions.innerHTML = "";
+    sentenceFeedback.textContent = "Beantworte Aufgaben falsch, dann erscheinen sie hier zum Wiederholen.";
+    sentenceResult.className = "result-summary";
+    sentenceResult.textContent = "Leer";
+    sentenceInput.hidden = true;
+    return;
+  }
+
+  const exercise = randomFrom(pool);
   sentenceState.current = exercise;
   sentenceState.selected = "";
 
@@ -807,9 +1007,53 @@ function renderSentenceExercise() {
   });
 }
 
+function getSentencePool() {
+  if (sentenceState.mode === "signal") {
+    return sentenceExercises.filter((exercise) => exercise.category === "signal");
+  }
+
+  if (sentenceState.mode === "mistakes") {
+    return state.mistakes.map(mistakeToPracticeExercise).filter(Boolean);
+  }
+
+  return sentenceExercises;
+}
+
+function mistakeToPracticeExercise(mistake) {
+  if (mistake.kind === "sentence") {
+    return {
+      ...mistake.data,
+      reviewKind: mistake.kind,
+      reviewData: mistake.data,
+    };
+  }
+
+  const data = mistake.data;
+  if (!data.verb || data.personIndex === undefined) return null;
+
+  const forms = getForms(data.verb);
+  const expected = data.expected || data.answer || forms[data.tense][data.personIndex];
+  const options = [...new Set(allTenses.map((tense) => forms[tense][data.personIndex]))];
+
+  return {
+    key: mistake.key,
+    prompt: `${data.verb} · ${persons[data.personIndex]} · ${tenseLabel(data.tense)}`,
+    form: expected,
+    options,
+    explanation: `${expected} ist die passende Form für ${persons[data.personIndex]} im ${tenseLabel(data.tense)}.`,
+    reviewKind: mistake.kind,
+    reviewData: data,
+  };
+}
+
 function checkSentenceExercise() {
   const exercise = sentenceState.current;
   if (!exercise) return;
+  if (!sentenceState.selected) {
+    sentenceFeedback.className = "sentence-feedback has-errors";
+    sentenceFeedback.textContent = "Wähle zuerst eine Antwort aus.";
+    return;
+  }
 
   const rawAnswer = sentenceState.selected;
   const correct = isCorrect(rawAnswer, exercise.form);
@@ -828,6 +1072,159 @@ function checkSentenceExercise() {
   sentenceFeedback.textContent = correct
     ? exercise.explanation
     : `${exercise.explanation} Richtige Antwort: ${exercise.form}.`;
+
+  const reviewKind = exercise.reviewKind || "sentence";
+  const reviewData = exercise.reviewData || exercise;
+  if (correct) {
+    recordCorrect(reviewKind, reviewData);
+  } else {
+    recordMistake(reviewKind, reviewData);
+  }
+}
+
+function makeVerbMiniTask() {
+  const verb = randomFrom(allVerbs);
+  const tense = randomFrom(allTenses);
+  const personIndex = Math.floor(Math.random() * persons.length);
+  const answer = getForms(verb)[tense][personIndex];
+
+  return {
+    kind: "verb-mini",
+    key: `exam-verb-${verb}-${tense}-${personIndex}`,
+    typeLabel: "Verbform",
+    prompt: `${verb} · ${persons[personIndex]} · ${tenseLabel(tense)}`,
+    verb,
+    tense,
+    personIndex,
+    answer,
+    explanation: `Die richtige Form ist ${answer}.`,
+  };
+}
+
+function makeExamTask(source, index) {
+  if (source === "verb") return makeVerbMiniTask();
+
+  const exercise = sentenceExercises[index % sentenceExercises.length];
+  return {
+    ...exercise,
+    kind: source === "signal" ? "signal" : "sentence",
+    typeLabel: source === "signal" ? "Signalwort-Kontext" : "Zeitwahl-Satz",
+  };
+}
+
+function buildExamTasks() {
+  const pattern = ["verb", "sentence", "signal", "verb", "sentence", "signal", "verb", "sentence", "signal", "verb"];
+  return pattern.map((kind, index) => makeExamTask(kind, index + Math.floor(Math.random() * sentenceExercises.length)));
+}
+
+function startExam() {
+  examState.active = true;
+  examState.tasks = buildExamTasks();
+  examState.index = 0;
+  examState.score = 0;
+  examState.answered = false;
+  examState.selected = "";
+  examState.misses = [];
+  examTask.hidden = false;
+  examSummary.hidden = true;
+  checkExamButton.hidden = false;
+  nextExamButton.hidden = true;
+  startExamButton.textContent = "Neu starten";
+  renderExamTask();
+}
+
+function renderExamTask() {
+  const task = examState.tasks[examState.index];
+  examState.answered = false;
+  examState.selected = "";
+  examProgress.textContent = `Aufgabe ${examState.index + 1} von ${examState.tasks.length}`;
+  examType.textContent = task.typeLabel || "Aufgabe";
+  examPrompt.textContent = task.prompt;
+  examOptions.innerHTML = "";
+  examFeedback.textContent = "";
+  examFeedback.className = "sentence-feedback";
+  examInput.value = "";
+  examInput.hidden = task.kind !== "verb-mini";
+  checkExamButton.hidden = false;
+  nextExamButton.hidden = true;
+
+  if (task.kind === "verb-mini") {
+    examInput.placeholder = "Form eingeben";
+    return;
+  }
+
+  task.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sentence-option";
+    button.dataset.value = option;
+    button.textContent = option;
+    examOptions.append(button);
+  });
+}
+
+function checkExamTask() {
+  if (!examState.active || examState.answered) return;
+  const task = examState.tasks[examState.index];
+  const rawAnswer = task.kind === "verb-mini" ? examInput.value : examState.selected;
+
+  if (!rawAnswer) {
+    examFeedback.className = "sentence-feedback has-errors";
+    examFeedback.textContent = "Gib eine Antwort ein oder wähle eine Option.";
+    return;
+  }
+
+  const correct = isCorrect(rawAnswer, task.kind === "verb-mini" ? task.answer : task.form);
+  examState.answered = true;
+  if (correct) examState.score += 1;
+
+  if (task.kind === "verb-mini") {
+    examInput.classList.toggle("correct", correct);
+    examInput.classList.toggle("incorrect", !correct);
+  } else {
+    examOptions.querySelectorAll(".sentence-option").forEach((button) => {
+      button.classList.toggle("correct", button.dataset.value === task.form);
+      button.classList.toggle("incorrect", button.dataset.value === examState.selected && button.dataset.value !== task.form);
+    });
+  }
+
+  const explanation = task.kind === "verb-mini" ? task.explanation : task.explanation;
+  examFeedback.className = `sentence-feedback ${correct ? "is-success" : "has-errors"}`;
+  examFeedback.textContent = correct ? explanation : `${explanation} Richtige Antwort: ${task.kind === "verb-mini" ? task.answer : task.form}.`;
+
+  if (!correct) {
+    examState.misses.push(task.prompt);
+    recordMistake(task.kind === "verb-mini" ? "exam-verb" : "sentence", task);
+  } else {
+    recordCorrect(task.kind === "verb-mini" ? "exam-verb" : "sentence", task);
+  }
+
+  checkExamButton.hidden = true;
+  nextExamButton.hidden = false;
+}
+
+function nextExamTask() {
+  if (examState.index + 1 >= examState.tasks.length) {
+    finishExam();
+    return;
+  }
+
+  examState.index += 1;
+  renderExamTask();
+}
+
+function finishExam() {
+  examState.active = false;
+  examTask.hidden = true;
+  checkExamButton.hidden = true;
+  nextExamButton.hidden = true;
+  examProgress.textContent = `${examState.score}/${examState.tasks.length} Punkte`;
+  examSummary.hidden = false;
+  examSummary.innerHTML = `
+    <strong>Ergebnis: ${examState.score}/${examState.tasks.length}</strong>
+    <span>${examState.misses.length === 0 ? "Sehr stark, keine Fehler gespeichert." : `${examState.misses.length} Aufgabe${examState.misses.length === 1 ? "" : "n"} für „Nochmal üben“ gespeichert.`}</span>
+  `;
+  startExamButton.textContent = "Nochmal üben";
 }
 
 form.addEventListener("submit", (event) => {
@@ -876,8 +1273,50 @@ sentenceOptions.addEventListener("click", (event) => {
   sentenceResult.className = "result-summary";
   sentenceResult.textContent = "Ausgewählt";
 });
+sentenceModeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    sentenceState.mode = button.dataset.sentenceMode;
+    sentenceModeButtons.forEach((option) => {
+      option.classList.toggle("is-active", option === button);
+    });
+    renderSentenceExercise();
+  });
+});
 checkSentenceButton.addEventListener("click", checkSentenceExercise);
 nextSentenceButton.addEventListener("click", renderSentenceExercise);
+examOptions.addEventListener("click", (event) => {
+  const button = event.target.closest(".sentence-option");
+  if (!button || examState.answered) return;
+  examState.selected = button.dataset.value;
+  examOptions.querySelectorAll(".sentence-option").forEach((option) => {
+    option.classList.toggle("is-selected", option === button);
+    option.classList.remove("correct", "incorrect");
+  });
+  examFeedback.textContent = "";
+  examFeedback.className = "sentence-feedback";
+});
+examInput.addEventListener("input", () => {
+  examInput.classList.remove("correct", "incorrect");
+  examFeedback.textContent = "";
+  examFeedback.className = "sentence-feedback";
+});
+startExamButton.addEventListener("click", startExam);
+checkExamButton.addEventListener("click", checkExamTask);
+nextExamButton.addEventListener("click", nextExamTask);
+practiceMistakesButton.addEventListener("click", () => {
+  sentenceState.mode = "mistakes";
+  sentenceModeButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.sentenceMode === "mistakes");
+  });
+  renderSentenceExercise();
+  document.querySelector("#zeitwahl").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+clearMistakesButton.addEventListener("click", () => {
+  state.mistakes = [];
+  saveMistakes();
+  renderMistakeOverview();
+  if (sentenceState.mode === "mistakes") renderSentenceExercise();
+});
 tenseFilterInputs.forEach((input) => {
   input.addEventListener("change", () => {
     state.tenseFilter = input.value;
@@ -887,3 +1326,4 @@ tenseFilterInputs.forEach((input) => {
 
 setExercise();
 renderSentenceExercise();
+renderMistakeOverview();

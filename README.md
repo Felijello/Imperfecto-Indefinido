@@ -13,6 +13,9 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pret
 - Umschaltbarer Modus "Nur unregelmäßige Verben"
 - Zeitform-Filter für alle Zeiten, nur Imperfecto, nur Indefinido oder nur Perfecto
 - Satzübungen zur Zeitwahl mit Lückensätzen und drei echten Formen desselben Verbs
+- Schularbeitsmodus mit 10 gemischten Aufgaben und Punkteübersicht
+- Automatische Fehler-Wiederholung mit localStorage und "Schwierige Aufgaben"
+- Signalwort-Training mit Kontext statt isolierter Wortabfrage
 - Merkliste für schwere Verben mit dauerhaft gespeicherter Stern-Markierung
 - Filter "Nur markierte Verben" für gezieltes Wiederholen
 - Kleine Anzeige, ob das aktuelle Verb regelmäßig oder unregelmäßig ist

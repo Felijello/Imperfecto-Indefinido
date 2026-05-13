@@ -806,11 +806,15 @@ a {
 
 .learning-section,
 .choice-section,
+.exam-section,
+.review-section,
 .rules-section {
   padding: 34px 0 0;
 }
 
-.choice-card {
+.choice-card,
+.exam-card,
+.review-card {
   display: grid;
   gap: 12px;
   padding: 14px;
@@ -818,6 +822,10 @@ a {
   border-radius: var(--radius);
   background: rgba(25, 31, 42, 0.9);
   box-shadow: var(--shadow);
+}
+
+.review-card {
+  border-color: rgba(244, 199, 99, 0.2);
 }
 
 .choice-header {
@@ -866,6 +874,32 @@ a {
 .sentence-options {
   display: grid;
   gap: 8px;
+}
+
+.sentence-mode {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.sentence-mode button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sentence-mode button.is-active {
+  background: var(--accent);
+  color: #0b1712;
 }
 
 .sentence-option,
@@ -934,6 +968,48 @@ a {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+.exam-task[hidden],
+.exam-summary[hidden] {
+  display: none;
+}
+
+.exam-summary {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid rgba(123, 224, 184, 0.24);
+  border-radius: var(--radius);
+  background: rgba(123, 224, 184, 0.07);
+  color: var(--muted);
+}
+
+.exam-summary strong {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-card h2 {
+  margin: 4px 0 6px;
+  font-size: clamp(1.2rem, 4vw, 1.55rem);
+}
+
+.review-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.review-actions .button:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .section-heading {
@@ -1192,11 +1268,14 @@ a {
     align-items: start;
   }
 
-  .choice-card {
+  .choice-card,
+  .exam-card,
+  .review-card {
     padding: 18px;
   }
 
-  .choice-header {
+  .choice-header,
+  .review-card {
     grid-template-columns: 1fr auto;
     align-items: start;
   }
