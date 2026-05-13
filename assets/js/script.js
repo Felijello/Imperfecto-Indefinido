@@ -107,12 +107,6 @@ const taskModes = [
     hint: "Fülle alle Formen für beide Zeiten aus.",
   },
   {
-    id: "threeForms",
-    label: "3 Formen",
-    title: "Drei Formen gegeben",
-    hint: "Nutze die gesperrten Formen als Hinweis und ergänze den Rest.",
-  },
-  {
     id: "infinitiveAndOne",
     label: "Infinitiv + Form",
     title: "Infinitiv und eine Form",
@@ -121,8 +115,6 @@ const taskModes = [
 ];
 
 const markedStorageKey = "modoPasado.markedVerbs";
-const mistakeStorageKey = "modoPasado.mistakes";
-const mistakeMasteryTarget = 2;
 
 const state = {
   currentVerb: "",
@@ -130,12 +122,11 @@ const state = {
   lockedCells: [],
   autoFilledCells: [],
   activeTenses: [...allTenses],
-  selectedTenses: [...allTenses],
+  selectedTenses: ["indefinido"],
   taskMode: taskModes[0],
   irregularOnly: false,
   markedOnly: false,
   markedVerbs: loadMarkedVerbs(),
-  mistakes: loadMistakes(),
 };
 
 function getParticiple(verb) {
@@ -194,9 +185,6 @@ const examSummary = document.querySelector("#examSummary");
 const startExamButton = document.querySelector("#startExam");
 const checkExamButton = document.querySelector("#checkExam");
 const nextExamButton = document.querySelector("#nextExam");
-const reviewStatus = document.querySelector("#reviewStatus");
-const practiceMistakesButton = document.querySelector("#practiceMistakes");
-const clearMistakesButton = document.querySelector("#clearMistakes");
 
 const sentenceExercises = [
   {
@@ -388,66 +376,6 @@ function loadMarkedVerbs() {
   }
 }
 
-function loadMistakes() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(mistakeStorageKey) || "[]");
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveMistakes() {
-  localStorage.setItem(mistakeStorageKey, JSON.stringify(state.mistakes));
-}
-
-function mistakeKey(kind, data) {
-  if (data.key) return `${kind}:${data.key}`;
-  if (kind === "verb") return `verb:${data.verb}:${data.tense}:${data.personIndex}`;
-  return `${kind}:${data.prompt || data.form}`;
-}
-
-function recordMistake(kind, data) {
-  const key = mistakeKey(kind, data);
-  const existing = state.mistakes.find((mistake) => mistake.key === key);
-  const payload = { ...data };
-
-  if (existing) {
-    existing.data = payload;
-    existing.correctStreak = 0;
-    existing.count += 1;
-  } else {
-    state.mistakes.push({ key, kind, data: payload, correctStreak: 0, count: 1 });
-  }
-
-  saveMistakes();
-  renderMistakeOverview();
-}
-
-function recordCorrect(kind, data) {
-  const key = mistakeKey(kind, data);
-  const existing = state.mistakes.find((mistake) => mistake.key === key);
-  if (!existing) return;
-
-  existing.correctStreak += 1;
-  if (existing.correctStreak >= mistakeMasteryTarget) {
-    state.mistakes = state.mistakes.filter((mistake) => mistake.key !== key);
-  }
-
-  saveMistakes();
-  renderMistakeOverview();
-}
-
-function renderMistakeOverview() {
-  const count = state.mistakes.length;
-  reviewStatus.textContent =
-    count === 0
-      ? "Aktuell sind keine schwierigen Aufgaben gespeichert."
-      : `${count} schwierige Aufgabe${count === 1 ? "" : "n"} gespeichert. Nach ${mistakeMasteryTarget} richtigen Wiederholungen verschwindet ein Fehler automatisch.`;
-  practiceMistakesButton.disabled = count === 0;
-  clearMistakesButton.disabled = count === 0;
-}
-
 function saveMarkedVerbs() {
   localStorage.setItem(markedStorageKey, JSON.stringify(state.markedVerbs));
 }
@@ -566,7 +494,7 @@ function getCellsForTenses(tenses) {
 function makeLockedCells(forms, mode, activeTenses) {
   if (mode.id === "infinitiveOnly") return [];
 
-  const amount = mode.id === "threeForms" ? 3 : 1;
+  const amount = 1;
   const pool = getCellsForTenses(activeTenses);
   const locked = [];
 
@@ -655,8 +583,6 @@ function updatePracticeCopy() {
 
   if (state.taskMode.id === "infinitiveOnly") {
     promptHint.textContent = `Fülle die Formen für ${scope} aus.`;
-  } else if (state.taskMode.id === "threeForms") {
-    promptHint.textContent = "Nutze die gesperrten Formen als Hinweis und ergänze den Rest.";
   } else {
     promptHint.textContent = "Eine Form ist bereits eingetragen. Ergänze alle übrigen Felder.";
   }
@@ -892,9 +818,8 @@ function setExercise() {
   renderStarButton();
   renderMarkedList();
 
-  const showInfinitive = state.taskMode.id !== "threeForms";
-  verbTitle.textContent = showInfinitive ? state.currentVerb : "Formen erkennen";
-  verbGroup.textContent = showInfinitive ? `-${getGroup(state.currentVerb)}` : "Hinweis";
+  verbTitle.textContent = state.currentVerb;
+  verbGroup.textContent = `-${getGroup(state.currentVerb)}`;
   promptType.textContent = state.taskMode.title;
   updatePracticeCopy();
   sessionCount.textContent = state.sessionCount;
@@ -949,24 +874,10 @@ function checkAnswers(showAnswers = false) {
       input.classList.add("correct");
       note.textContent = input.classList.contains("prefilled") ? "Vorgegeben" : "Richtig";
       correct += 1;
-      if (!input.classList.contains("prefilled")) {
-        recordCorrect("verb", {
-          verb: state.currentVerb,
-          tense,
-          personIndex: index,
-        });
-      }
     } else {
       input.classList.add("incorrect");
       note.classList.add("is-error");
       note.textContent = input.value.trim() ? `Erwartet: ${expected}` : "Noch leer";
-      recordMistake("verb", {
-        verb: state.currentVerb,
-        tense,
-        personIndex: index,
-        expected,
-        label: `${state.currentVerb} · ${persons[index]} · ${tenseLabel(tense)}`,
-      });
     }
   });
 
@@ -976,17 +887,6 @@ function checkAnswers(showAnswers = false) {
 
 function renderSentenceExercise() {
   const pool = getSentencePool();
-  if (pool.length === 0) {
-    sentenceState.current = null;
-    sentencePrompt.textContent = "Keine Fehler gespeichert.";
-    sentenceOptions.innerHTML = "";
-    sentenceFeedback.textContent = "Beantworte Aufgaben falsch, dann erscheinen sie hier zum Wiederholen.";
-    sentenceResult.className = "result-summary";
-    sentenceResult.textContent = "Leer";
-    sentenceInput.hidden = true;
-    return;
-  }
-
   const exercise = randomFrom(pool);
   sentenceState.current = exercise;
   sentenceState.selected = "";
@@ -1016,38 +916,7 @@ function getSentencePool() {
     return sentenceExercises.filter((exercise) => exercise.category === "signal");
   }
 
-  if (sentenceState.mode === "mistakes") {
-    return state.mistakes.map(mistakeToPracticeExercise).filter(Boolean);
-  }
-
   return sentenceExercises;
-}
-
-function mistakeToPracticeExercise(mistake) {
-  if (mistake.kind === "sentence") {
-    return {
-      ...mistake.data,
-      reviewKind: mistake.kind,
-      reviewData: mistake.data,
-    };
-  }
-
-  const data = mistake.data;
-  if (!data.verb || data.personIndex === undefined) return null;
-
-  const forms = getForms(data.verb);
-  const expected = data.expected || data.answer || forms[data.tense][data.personIndex];
-  const options = [...new Set(allTenses.map((tense) => forms[tense][data.personIndex]))];
-
-  return {
-    key: mistake.key,
-    prompt: `${data.verb} · ${persons[data.personIndex]} · ${tenseLabel(data.tense)}`,
-    form: expected,
-    options,
-    explanation: `${expected} ist die passende Form für ${persons[data.personIndex]} im ${tenseLabel(data.tense)}.`,
-    reviewKind: mistake.kind,
-    reviewData: data,
-  };
 }
 
 function checkSentenceExercise() {
@@ -1076,14 +945,6 @@ function checkSentenceExercise() {
   sentenceFeedback.textContent = correct
     ? exercise.explanation
     : `${exercise.explanation} Richtige Antwort: ${exercise.form}.`;
-
-  const reviewKind = exercise.reviewKind || "sentence";
-  const reviewData = exercise.reviewData || exercise;
-  if (correct) {
-    recordCorrect(reviewKind, reviewData);
-  } else {
-    recordMistake(reviewKind, reviewData);
-  }
 }
 
 function makeVerbMiniTask() {
@@ -1198,9 +1059,6 @@ function checkExamTask() {
 
   if (!correct) {
     examState.misses.push(task.prompt);
-    recordMistake(task.kind === "verb-mini" ? "exam-verb" : "sentence", task);
-  } else {
-    recordCorrect(task.kind === "verb-mini" ? "exam-verb" : "sentence", task);
   }
 
   checkExamButton.hidden = true;
@@ -1226,9 +1084,9 @@ function finishExam() {
   examSummary.hidden = false;
   examSummary.innerHTML = `
     <strong>Ergebnis: ${examState.score}/${examState.tasks.length}</strong>
-    <span>${examState.misses.length === 0 ? "Sehr stark, keine Fehler gespeichert." : `${examState.misses.length} Aufgabe${examState.misses.length === 1 ? "" : "n"} für „Nochmal üben“ gespeichert.`}</span>
+    <span>${examState.misses.length === 0 ? "Sehr stark, keine Fehler." : `${examState.misses.length} Aufgabe${examState.misses.length === 1 ? "" : "n"} waren noch schwierig.`}</span>
   `;
-  startExamButton.textContent = "Nochmal üben";
+  startExamButton.textContent = "Neu starten";
 }
 
 form.addEventListener("submit", (event) => {
@@ -1307,20 +1165,6 @@ examInput.addEventListener("input", () => {
 startExamButton.addEventListener("click", startExam);
 checkExamButton.addEventListener("click", checkExamTask);
 nextExamButton.addEventListener("click", nextExamTask);
-practiceMistakesButton.addEventListener("click", () => {
-  sentenceState.mode = "mistakes";
-  sentenceModeButtons.forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.sentenceMode === "mistakes");
-  });
-  renderSentenceExercise();
-  document.querySelector("#zeitwahl").scrollIntoView({ behavior: "smooth", block: "start" });
-});
-clearMistakesButton.addEventListener("click", () => {
-  state.mistakes = [];
-  saveMistakes();
-  renderMistakeOverview();
-  if (sentenceState.mode === "mistakes") renderSentenceExercise();
-});
 tenseToggleInputs.forEach((input) => {
   input.addEventListener("change", () => {
     const nextTenses = [...tenseToggleInputs]
@@ -1341,4 +1185,3 @@ tenseToggleInputs.forEach((input) => {
 syncTenseToggles();
 setExercise();
 renderSentenceExercise();
-renderMistakeOverview();

@@ -99,7 +99,7 @@
               <fieldset class="tense-filter" aria-label="Zeitformen auswählen">
                 <legend>Zeitform</legend>
                 <label>
-                  <input type="checkbox" name="tenseToggle" value="imperfect" checked>
+                  <input type="checkbox" name="tenseToggle" value="imperfect">
                   <span>Imperfecto</span>
                 </label>
                 <label>
@@ -107,7 +107,7 @@
                   <span>Indefinido</span>
                 </label>
                 <label>
-                  <input type="checkbox" name="tenseToggle" value="perfecto" checked>
+                  <input type="checkbox" name="tenseToggle" value="perfecto">
                   <span>Perfecto</span>
                 </label>
               </fieldset>
@@ -149,7 +149,6 @@
             <div class="sentence-mode" aria-label="Satzübungsmodus">
               <button class="is-active" type="button" data-sentence-mode="all">Alle Sätze</button>
               <button type="button" data-sentence-mode="signal">Signalwörter</button>
-              <button type="button" data-sentence-mode="mistakes">Fehler wiederholen</button>
             </div>
 
             <div class="sentence-card">
@@ -192,20 +191,6 @@
               <button id="startExam" class="button primary" type="button">Schularbeit üben</button>
               <button id="checkExam" class="button secondary" type="button" hidden>Prüfen</button>
               <button id="nextExam" class="button ghost" type="button" hidden>Weiter</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="review-section" aria-labelledby="reviewTitle">
-          <div class="review-card">
-            <div>
-              <span class="marked-kicker">Nochmal üben</span>
-              <h2 id="reviewTitle">Schwierige Aufgaben</h2>
-              <p id="reviewStatus">Fehler aus Verbformen und Satzübungen werden hier automatisch gesammelt.</p>
-            </div>
-            <div class="review-actions">
-              <button id="practiceMistakes" class="button ghost small" type="button">Fehler wiederholen</button>
-              <button id="clearMistakes" class="button danger small" type="button">Alle Fehler löschen</button>
             </div>
           </div>
         </section>

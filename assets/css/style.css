@@ -611,6 +611,7 @@ a {
 }
 
 .verb-table tr {
+  --active-tense-count: 1;
   display: grid;
   grid-template-columns: minmax(4.8rem, 0.78fr) minmax(0, 1fr);
   gap: 7px;
@@ -619,6 +620,18 @@ a {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.027);
+}
+
+.practice-panel[data-active-count="1"] .verb-table tr {
+  --active-tense-count: 1;
+}
+
+.practice-panel[data-active-count="2"] .verb-table tr {
+  --active-tense-count: 2;
+}
+
+.practice-panel[data-active-count="3"] .verb-table tr {
+  --active-tense-count: 3;
 }
 
 .verb-table td,
@@ -650,15 +663,7 @@ a {
   content: attr(data-label);
 }
 
-.input-cell[data-tense-cell="imperfect"] {
-  grid-column: 2;
-}
-
-.input-cell[data-tense-cell="indefinido"] {
-  grid-column: 2;
-}
-
-.input-cell[data-tense-cell="perfecto"] {
+.input-cell[data-tense-cell] {
   grid-column: 2;
 }
 
@@ -808,14 +813,12 @@ a {
 .learning-section,
 .choice-section,
 .exam-section,
-.review-section,
 .rules-section {
   padding: 34px 0 0;
 }
 
 .choice-card,
-.exam-card,
-.review-card {
+.exam-card {
   display: grid;
   gap: 12px;
   padding: 14px;
@@ -823,10 +826,6 @@ a {
   border-radius: var(--radius);
   background: rgba(25, 31, 42, 0.9);
   box-shadow: var(--shadow);
-}
-
-.review-card {
-  border-color: rgba(244, 199, 99, 0.2);
 }
 
 .choice-header {
@@ -989,28 +988,6 @@ a {
 .exam-summary strong {
   color: var(--text);
   font-size: 1.05rem;
-}
-
-.review-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.review-card h2 {
-  margin: 4px 0 6px;
-  font-size: clamp(1.2rem, 4vw, 1.55rem);
-}
-
-.review-card p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.review-actions .button:disabled {
-  opacity: 0.45;
-  cursor: default;
 }
 
 .section-heading {
@@ -1210,19 +1187,11 @@ a {
 
 @media (min-width: 430px) {
   .verb-table tr {
-    grid-template-columns: minmax(5.1rem, 0.54fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(5.1rem, 0.54fr) repeat(var(--active-tense-count), minmax(0, 1fr));
   }
 
-  .input-cell[data-tense-cell="imperfect"] {
-    grid-column: 2;
-  }
-
-  .input-cell[data-tense-cell="indefinido"] {
-    grid-column: 3;
-  }
-
-  .input-cell[data-tense-cell="perfecto"] {
-    grid-column: 4;
+  .input-cell[data-tense-cell] {
+    grid-column: auto;
   }
 }
 
@@ -1245,26 +1214,33 @@ a {
     grid-template-columns: minmax(4.35rem, 0.42fr) repeat(var(--active-tense-count, 1), minmax(0, 1fr));
   }
 
-  .practice-panel[data-active-count="1"] .verb-table tr {
-    --active-tense-count: 1;
-  }
-
-  .practice-panel[data-active-count="2"] .verb-table tr {
-    --active-tense-count: 2;
+  .practice-panel[data-active-count="2"] .input-cell,
+  .practice-panel[data-active-count="3"] .input-cell {
+    grid-column: auto;
   }
 
   .practice-panel[data-active-count="3"] .verb-table tr {
-    --active-tense-count: 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    padding: 10px;
+  }
+
+  .practice-panel[data-active-count="3"] .person-cell {
+    grid-column: 1 / -1;
+    padding-bottom: 1px;
   }
 
   .practice-panel[data-active-count="3"] .input-cell::before {
-    font-size: 0.58rem;
+    font-size: 0.6rem;
   }
 
   .practice-panel[data-active-count="3"] .verb-input {
+    min-height: 40px;
+    padding-top: 8px;
     padding-right: 7px;
+    padding-bottom: 8px;
     padding-left: 7px;
-    font-size: clamp(0.78rem, 3.25vw, 0.94rem);
+    font-size: clamp(0.8rem, 3.25vw, 0.94rem);
   }
 }
 
@@ -1312,13 +1288,11 @@ a {
   }
 
   .choice-card,
-  .exam-card,
-  .review-card {
+  .exam-card {
     padding: 18px;
   }
 
-  .choice-header,
-  .review-card {
+  .choice-header {
     grid-template-columns: 1fr auto;
     align-items: start;
   }

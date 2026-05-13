@@ -6,15 +6,13 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pret
 
 - Zufällige Verbübungen ohne feste Runden
 - Tabelle für alle Personen in allen drei Vergangenheitszeiten
-- Drei zufällige Aufgabenmodi:
+- Zwei zufällige Aufgabenmodi:
   - nur der Infinitiv ist gegeben
-  - drei zufällige Formen sind vorgegeben und gesperrt
   - Infinitiv plus eine zufällige Form sind gegeben
 - Umschaltbarer Modus "Nur unregelmäßige Verben"
 - Zeitform-Filter für alle Zeiten, nur Imperfecto, nur Indefinido oder nur Perfecto
 - Satzübungen zur Zeitwahl mit Lückensätzen und drei echten Formen desselben Verbs
 - Schularbeitsmodus mit 10 gemischten Aufgaben und Punkteübersicht
-- Automatische Fehler-Wiederholung mit localStorage und "Schwierige Aufgaben"
 - Signalwort-Training mit Kontext statt isolierter Wortabfrage
 - Merkliste für schwere Verben mit dauerhaft gespeicherter Stern-Markierung
 - Filter "Nur markierte Verben" für gezieltes Wiederholen
