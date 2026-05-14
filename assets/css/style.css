@@ -17,7 +17,6 @@
   --shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
   --radius: 8px;
   --tap: 48px;
-  --mobile-keyboard-inset: 0px;
 }
 
 * {
@@ -26,8 +25,6 @@
 
 html {
   min-width: 0;
-  scroll-padding-top: calc(14px + env(safe-area-inset-top));
-  scroll-padding-bottom: calc(92px + env(safe-area-inset-bottom));
   scroll-behavior: smooth;
 }
 
@@ -44,8 +41,6 @@ body {
   font-size: 15px;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 button,
@@ -54,10 +49,6 @@ input {
 }
 
 button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-input {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -708,7 +699,6 @@ a {
 .verb-input:focus {
   border-color: rgba(123, 224, 184, 0.78);
   box-shadow: 0 0 0 4px rgba(123, 224, 184, 0.12);
-  transform: translateY(-1px);
 }
 
 .verb-input.prefilled {
@@ -779,21 +769,16 @@ a {
   font-weight: 800;
   cursor: pointer;
   touch-action: manipulation;
-  transition: transform 150ms ease, border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
 .button:hover {
   transform: translateY(-1px);
 }
 
-.button:active {
-  transform: translateY(0) scale(0.985);
-}
-
 .button:focus-visible {
   outline: 3px solid rgba(123, 224, 184, 0.24);
   outline-offset: 2px;
-  box-shadow: 0 0 0 5px rgba(123, 224, 184, 0.08);
 }
 
 .button.primary {
@@ -960,7 +945,6 @@ a {
 .sentence-input:focus {
   border-color: rgba(123, 224, 184, 0.78);
   box-shadow: 0 0 0 4px rgba(123, 224, 184, 0.12);
-  transform: translateY(-1px);
 }
 
 .sentence-input[hidden] {
@@ -1262,66 +1246,6 @@ a {
   .exam-card .sentence-actions:has(#startExam:not([hidden])) {
     grid-template-columns: 1fr;
     justify-content: stretch;
-  }
-}
-
-@media (max-width: 699px) {
-  html {
-    scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom) + var(--mobile-keyboard-inset));
-  }
-
-  body {
-    overscroll-behavior-y: contain;
-  }
-
-  .app-shell {
-    padding-top: max(10px, env(safe-area-inset-top));
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-  }
-
-  .verb-input,
-  .sentence-input {
-    min-height: 46px;
-    font-size: 16px;
-    scroll-margin-block: 140px;
-  }
-
-  .verb-table tr,
-  .sentence-card,
-  .exam-task {
-    scroll-margin-block: 140px;
-  }
-
-  .button,
-  .sentence-option,
-  .star-button,
-  .nav-links a,
-  .sentence-mode button {
-    touch-action: manipulation;
-  }
-
-  .button:active,
-  .sentence-option:active,
-  .star-button:active,
-  .nav-links a:active,
-  .sentence-mode button:active {
-    transform: scale(0.985);
-  }
-
-  .sentence-option,
-  .sentence-mode button,
-  .nav-links a {
-    transition: transform 140ms ease, border-color 150ms ease, background 150ms ease, color 150ms ease;
-  }
-
-  .actions {
-    bottom: var(--mobile-keyboard-inset);
-    transform: translateZ(0);
-    will-change: transform;
-  }
-
-  .mobile-action-spacer {
-    height: calc(82px + env(safe-area-inset-bottom) + var(--mobile-keyboard-inset));
   }
 }
 
