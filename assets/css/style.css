@@ -738,24 +738,20 @@ a {
 }
 
 .actions {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 30;
+  position: static;
   display: grid;
   grid-template-columns: 1.05fr 1fr 0.9fr;
   gap: 8px;
-  margin: 0;
-  padding: 10px max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-  border-top: 1px solid var(--line);
-  background: rgba(16, 19, 26, 0.92);
-  box-shadow: 0 -16px 34px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(18px);
+  margin-top: 14px;
+  padding: 0;
+  border-top: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .mobile-action-spacer {
-  height: calc(72px + env(safe-area-inset-bottom));
+  display: none;
 }
 
 .button {
