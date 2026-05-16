@@ -193,11 +193,6 @@ const imperativeFormTask = document.querySelector("#imperativeFormTask");
 const imperativeVerbType = document.querySelector("#imperativeVerbType");
 const imperativeVerb = document.querySelector("#imperativeVerb");
 const imperativeRows = document.querySelector("#imperativeRows");
-const imperativeChoiceTask = document.querySelector("#imperativeChoiceTask");
-const imperativeChoiceType = document.querySelector("#imperativeChoiceType");
-const imperativePrompt = document.querySelector("#imperativePrompt");
-const imperativeOptions = document.querySelector("#imperativeOptions");
-const imperativeFeedback = document.querySelector("#imperativeFeedback");
 const checkImperativeButton = document.querySelector("#checkImperative");
 const showImperativeSolutionButton = document.querySelector("#showImperativeSolution");
 const nextImperativeButton = document.querySelector("#nextImperative");
@@ -226,40 +221,16 @@ const imperativeVerbs = [
   { verb: "ir", label: "unregelmäßig", tags: ["irregular"], forms: { tu: "ve", usted: "vaya", vosotros: "id", ustedes: "vayan" } },
   { verb: "dar", label: "unregelmäßig", tags: ["irregular"], forms: { tu: "da", usted: "dé", vosotros: "dad", ustedes: "den" } },
   { verb: "ser", label: "unregelmäßig", tags: ["irregular"], forms: { tu: "sé", usted: "sea", vosotros: "sed", ustedes: "sean" } },
-  { verb: "ver", label: "unregelmäßig", tags: ["irregular"], forms: { tu: "ve", usted: "vea", vosotros: "ved", ustedes: "vean" } },
-  { verb: "seguir", label: "unregelmäßig", tags: ["irregular", "stem"], forms: { tu: "sigue", usted: "siga", vosotros: "seguid", ustedes: "sigan" } },
-  { verb: "irse", label: "reflexiv", tags: ["irregular", "pronoun"], forms: { tu: "vete", usted: "váyase", vosotros: "idos", ustedes: "váyanse" } },
   { verb: "oír", label: "unregelmäßig", tags: ["irregular"], forms: { tu: "oye", usted: "oiga", vosotros: "oíd", ustedes: "oigan" } },
-  { verb: "conocer", label: "-zco", tags: ["irregular"], forms: { tu: "conoce", usted: "conozca", vosotros: "conoced", ustedes: "conozcan" } },
-  { verb: "servir", label: "e → i", tags: ["irregular", "stem"], forms: { tu: "sirve", usted: "sirva", vosotros: "servid", ustedes: "sirvan" } },
   { verb: "explicar", label: "c → qu", tags: ["orthographic"], forms: { tu: "explica", usted: "explique", vosotros: "explicad", ustedes: "expliquen" } },
   { verb: "pagar", label: "g → gu", tags: ["orthographic"], forms: { tu: "paga", usted: "pague", vosotros: "pagad", ustedes: "paguen" } },
   { verb: "empezar", label: "z → c / e → ie", tags: ["orthographic", "stem"], forms: { tu: "empieza", usted: "empiece", vosotros: "empezad", ustedes: "empiecen" } },
   { verb: "corregir", label: "g → j / e → i", tags: ["orthographic", "stem"], forms: { tu: "corrige", usted: "corrija", vosotros: "corregid", ustedes: "corrijan" } },
 ];
 
-const imperativeChoiceExercises = [
-  { prompt: "___ la puerta, por favor.", answer: "cierra", options: ["cierra", "cierres", "cerró"], tag: "stem", explanation: "Cierra ist der bejahte Imperativ für tú von cerrar." },
-  { prompt: "¡___ cuidado!", answer: "ten", options: ["ten", "tienes", "tuvo"], tag: "irregular", explanation: "Ten ist die unregelmäßige tú-Form von tener." },
-  { prompt: "¡___ la verdad!", answer: "diga", options: ["diga", "dice", "dijo"], tag: "irregular", explanation: "Diga ist die höfliche usted-Form von decir." },
-  { prompt: "¡___ los deberes!", answer: "haz", options: ["haz", "haces", "hizo"], tag: "irregular", explanation: "Haz ist die unregelmäßige tú-Form von hacer." },
-  { prompt: "¡___ aquí!", answer: "ven", options: ["ven", "vienes", "vino"], tag: "irregular", explanation: "Ven ist die unregelmäßige tú-Form von venir." },
-  { prompt: "¡___!", answer: "vete", options: ["vete", "vas", "fuiste"], tag: "pronoun", explanation: "Vete ist der bejahte Imperativ von irse für tú." },
-  { prompt: "¡___ el texto!", answer: "escribe", options: ["escribe", "escribas", "escribió"], tag: "regular", explanation: "Escribe ist die tú-Form von escribir." },
-  { prompt: "¡___ agua!", answer: "bebe", options: ["bebe", "bebas", "bebió"], tag: "regular", explanation: "Bebe ist die tú-Form von beber." },
-  { prompt: "¡___ aquí!", answer: "póngalo", options: ["póngalo", "ponlo", "puso"], tag: "pronoun", explanation: "Póngalo ist ein bejahter Imperativ mit angehängtem Pronomen." },
-  { prompt: "¡___!", answer: "levantaos", options: ["levantaos", "levantad os", "levantasteis"], tag: "pronoun", explanation: "Bei vosotros/as fällt vor os das -d weg: levantaos." },
-  { prompt: "¡___!", answer: "llámanos", options: ["llámanos", "llama nos", "llamó"], tag: "pronoun", explanation: "Beim bejahten Imperativ wird nos angehängt und die Form bekommt einen Akzent." },
-  { prompt: "¡___!", answer: "acuéstate", options: ["acuéstate", "acuestas te", "acostó"], tag: "pronoun", explanation: "Acuéstate ist ein reflexiver bejahter Imperativ mit Akzent." },
-  { prompt: "¡___!", answer: "dúchate", options: ["dúchate", "ducha te", "duchó"], tag: "pronoun", explanation: "Dúchate hängt te an und braucht einen Akzent." },
-];
-
 const imperativeState = {
   filter: "all",
-  taskType: "form",
   currentVerb: null,
-  currentChoice: null,
-  selected: "",
 };
 
 const sentenceExercises = [
@@ -1167,27 +1138,15 @@ function finishExam() {
 
 function getImperativeVerbPool() {
   if (imperativeState.filter === "all") return imperativeVerbs;
-  if (imperativeState.filter === "pronoun") {
-    return imperativeVerbs.filter((item) => item.tags.includes("pronoun"));
-  }
   return imperativeVerbs.filter((item) => item.tags.includes(imperativeState.filter));
-}
-
-function getImperativeChoicePool() {
-  if (imperativeState.filter === "all") return imperativeChoiceExercises;
-  return imperativeChoiceExercises.filter((exercise) => exercise.tag === imperativeState.filter);
 }
 
 function renderImperativeFormTask() {
   const pool = getImperativeVerbPool();
   const verb = randomFrom(pool);
-  imperativeState.taskType = "form";
   imperativeState.currentVerb = verb;
-  imperativeState.currentChoice = null;
-  imperativeState.selected = "";
 
   imperativeFormTask.hidden = false;
-  imperativeChoiceTask.hidden = true;
   imperativeExerciseTitle.textContent = "Formen ausfüllen";
   imperativeExerciseHint.textContent = "Fülle tú, usted, vosotros/as und ustedes aus.";
   imperativeResult.className = "result-summary";
@@ -1208,45 +1167,8 @@ function renderImperativeFormTask() {
   });
 }
 
-function renderImperativeChoiceTask() {
-  const pool = getImperativeChoicePool();
-  const exercise = randomFrom(pool.length ? pool : imperativeChoiceExercises);
-  imperativeState.taskType = "choice";
-  imperativeState.currentChoice = exercise;
-  imperativeState.currentVerb = null;
-  imperativeState.selected = "";
-
-  imperativeFormTask.hidden = true;
-  imperativeChoiceTask.hidden = false;
-  imperativeExerciseTitle.textContent = "Richtige Form auswählen";
-  imperativeExerciseHint.textContent = "Wähle die passende Imperativform für den Satz.";
-  imperativeResult.className = "result-summary";
-  imperativeResult.textContent = "Bereit";
-  imperativeChoiceType.textContent = exercise.tag === "pronoun" ? "Pronomen" : "Lücke + Auswahl";
-  imperativePrompt.textContent = exercise.prompt;
-  imperativeFeedback.textContent = "";
-  imperativeFeedback.className = "sentence-feedback";
-  imperativeOptions.innerHTML = "";
-
-  exercise.options.forEach((option) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "sentence-option";
-    button.dataset.value = option;
-    button.textContent = option;
-    imperativeOptions.append(button);
-  });
-}
-
 function renderImperativeExercise() {
-  const useChoice =
-    imperativeState.filter === "pronoun" || Math.random() > 0.55;
-
-  if (useChoice) {
-    renderImperativeChoiceTask();
-  } else {
-    renderImperativeFormTask();
-  }
+  renderImperativeFormTask();
 }
 
 function checkImperativeForm(showSolution = false) {
@@ -1287,41 +1209,8 @@ function checkImperativeForm(showSolution = false) {
   imperativeResult.textContent = `${correct}/${imperativePersons.length} richtig`;
 }
 
-function checkImperativeChoice(showSolution = false) {
-  const exercise = imperativeState.currentChoice;
-  if (!exercise) return;
-
-  if (!imperativeState.selected && !showSolution) {
-    imperativeFeedback.className = "sentence-feedback has-errors";
-    imperativeFeedback.textContent = "Wähle zuerst eine Antwort aus.";
-    return;
-  }
-
-  const correct = isCorrect(imperativeState.selected, exercise.answer);
-
-  imperativeOptions.querySelectorAll(".sentence-option").forEach((button) => {
-    button.classList.toggle("correct", button.dataset.value === exercise.answer);
-    button.classList.toggle(
-      "incorrect",
-      !showSolution && button.dataset.value === imperativeState.selected && button.dataset.value !== exercise.answer
-    );
-  });
-
-  imperativeResult.className = `result-summary ${correct || showSolution ? "is-success" : "has-errors"}`;
-  imperativeResult.textContent = correct || showSolution ? "Richtig" : "Nochmal anschauen";
-  imperativeFeedback.className = `sentence-feedback ${correct || showSolution ? "is-success" : "has-errors"}`;
-  imperativeFeedback.textContent =
-    correct || showSolution
-      ? exercise.explanation
-      : `${exercise.explanation} Richtige Antwort: ${exercise.answer}.`;
-}
-
 function checkImperativeExercise(showSolution = false) {
-  if (imperativeState.taskType === "choice") {
-    checkImperativeChoice(showSolution);
-  } else {
-    checkImperativeForm(showSolution);
-  }
+  checkImperativeForm(showSolution);
 }
 
 form.addEventListener("submit", (event) => {
@@ -1408,19 +1297,6 @@ imperativeFilterButtons.forEach((button) => {
     });
     renderImperativeExercise();
   });
-});
-imperativeOptions.addEventListener("click", (event) => {
-  const button = event.target.closest(".sentence-option");
-  if (!button) return;
-  imperativeState.selected = button.dataset.value;
-  imperativeOptions.querySelectorAll(".sentence-option").forEach((option) => {
-    option.classList.toggle("is-selected", option === button);
-    option.classList.remove("correct", "incorrect");
-  });
-  imperativeFeedback.textContent = "";
-  imperativeFeedback.className = "sentence-feedback";
-  imperativeResult.className = "result-summary";
-  imperativeResult.textContent = "Ausgewählt";
 });
 checkImperativeButton.addEventListener("click", () => checkImperativeExercise(false));
 showImperativeSolutionButton.addEventListener("click", () => checkImperativeExercise(true));
