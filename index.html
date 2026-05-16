@@ -23,6 +23,7 @@
         <nav class="nav-links" aria-label="Seitennavigation">
           <a href="#trainer">Üben</a>
           <a href="#zeitwahl">Zeitwahl</a>
+          <a href="#imperativo">Imperativo</a>
           <a href="#lernen">Lernen</a>
         </nav>
         <label class="strict-toggle">
@@ -191,6 +192,135 @@
               <button id="startExam" class="button primary" type="button">Schularbeit üben</button>
               <button id="checkExam" class="button secondary" type="button" hidden>Prüfen</button>
               <button id="nextExam" class="button ghost" type="button" hidden>Weiter</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="imperativo" class="imperative-section" aria-labelledby="imperativeTitle">
+          <div class="section-heading">
+            <span>Imperativo afirmativo</span>
+            <h2 id="imperativeTitle">Imperativo afirmativo üben</h2>
+            <p>Bejahte Befehlsformen für tú, usted, vosotros/as und ustedes.</p>
+          </div>
+
+          <div class="imperative-grid">
+            <article class="imperative-card">
+              <h3>Grundidee</h3>
+              <p>Der Imperativo afirmativo wird benutzt, um jemanden direkt zu bitten, aufzufordern oder anzuweisen.</p>
+              <details open>
+                <summary>Regelmäßige Formen</summary>
+                <div class="imperative-rules">
+                  <p><strong>tú</strong> entspricht der 3. Person Singular Präsens: toma, bebe, escribe.</p>
+                  <p><strong>vosotros/as</strong>: Infinitiv -r wird zu -d: tomad, bebed, escribid.</p>
+                  <p><strong>usted/ustedes</strong>: Vokalwechsel wie im Subjuntivo: tome/tomen, beba/beban, escriba/escriban.</p>
+                </div>
+              </details>
+              <div class="mini-table" aria-label="Regelmäßige Imperativformen">
+                <span>tomar</span><strong>toma · tome · tomad · tomen</strong>
+                <span>beber</span><strong>bebe · beba · bebed · beban</strong>
+                <span>escribir</span><strong>escribe · escriba · escribid · escriban</strong>
+              </div>
+            </article>
+
+            <article class="imperative-card">
+              <h3>Stammänderungen und Sonderformen</h3>
+              <p>Bei einigen Verben ändert sich der Stamm. Vosotros/as bleibt oft näher am Infinitivstamm.</p>
+              <div class="stem-list">
+                <span>cerrar: cierra · cierre · cerrad · cierren</span>
+                <span>dormir: duerme · duerma · dormid · duerman</span>
+                <span>pedir: pide · pida · pedid · pidan</span>
+                <span>hacer: haz · haga · haced · hagan</span>
+                <span>traducir: traduce · traduzca · traducid · traduzcan</span>
+              </div>
+            </article>
+
+            <article class="imperative-card">
+              <h3>Stellung der Pronomen</h3>
+              <p>Beim bejahten Imperativ werden Objekt- und Reflexivpronomen angehängt. Wenn dadurch die drittletzte Silbe betont wird, braucht die Form einen Akzent.</p>
+              <p>Bei vosotros/as fällt beim Anhängen von <strong>os</strong> das <strong>-d</strong> weg.</p>
+              <div class="stem-list">
+                <span>¡llámanos!</span>
+                <span>¡levantaos!</span>
+                <span>¡póngalo!</span>
+                <span>¡pregúnteme!</span>
+                <span>¡acuéstate!</span>
+                <span>¡dúchate!</span>
+              </div>
+            </article>
+
+            <article class="imperative-card">
+              <h3>Unregelmäßige Formen</h3>
+              <p>Diese Formen musst du als feste Imperativformen kennen.</p>
+              <details>
+                <summary>Liste anzeigen</summary>
+                <div class="stem-list">
+                  <span>decir: di · diga · decid · digan</span>
+                  <span>hacer: haz · haga · haced · hagan</span>
+                  <span>poner: pon · ponga · poned · pongan</span>
+                  <span>tener: ten · tenga · tened · tengan</span>
+                  <span>salir: sal · salga · salid · salgan</span>
+                  <span>venir: ven · venga · venid · vengan</span>
+                  <span>ir: ve · vaya · id · vayan</span>
+                  <span>dar: da · dé · dad · den</span>
+                  <span>ser: sé · sea · sed · sean</span>
+                  <span>ver: ve · vea · ved · vean</span>
+                  <span>seguir: sigue · siga · seguid · sigan</span>
+                  <span>irse: vete · váyase · idos · váyanse</span>
+                  <span>oír: oye · oiga · oíd · oigan</span>
+                  <span>conocer: conoce · conozca · conoced · conozcan</span>
+                  <span>servir: sirve · sirva · servid · sirvan</span>
+                </div>
+              </details>
+            </article>
+
+            <article class="imperative-card">
+              <h3>Orthografische Besonderheiten</h3>
+              <p>Manche Schreibweisen ändern sich, damit die Aussprache erhalten bleibt.</p>
+              <div class="stem-list">
+                <span>explicar: explica · explique · explicad · expliquen</span>
+                <span>pagar: paga · pague · pagad · paguen</span>
+                <span>empezar: empieza · empiece · empezad · empiecen</span>
+                <span>corregir: corrige · corrija · corregid · corrijan</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="imperative-practice-card">
+            <div class="choice-header">
+              <div>
+                <span>Imperativo trainieren</span>
+                <h3 id="imperativeExerciseTitle">Formen ausfüllen</h3>
+                <p id="imperativeExerciseHint">Fülle die bejahten Imperativformen aus.</p>
+              </div>
+              <div id="imperativeResult" class="result-summary" aria-live="polite">Bereit</div>
+            </div>
+
+            <div class="imperative-filter" aria-label="Imperativo Filter">
+              <button class="is-active" type="button" data-imperative-filter="all">Alle</button>
+              <button type="button" data-imperative-filter="irregular">Nur unregelmäßige</button>
+              <button type="button" data-imperative-filter="stem">Nur Stammänderungen</button>
+              <button type="button" data-imperative-filter="pronoun">Nur Pronomen</button>
+            </div>
+
+            <div id="imperativeFormTask" class="imperative-task">
+              <div class="imperative-task-head">
+                <span id="imperativeVerbType" class="sentence-type">Verb</span>
+                <strong id="imperativeVerb">tomar</strong>
+              </div>
+              <div id="imperativeRows" class="imperative-form-grid"></div>
+            </div>
+
+            <div id="imperativeChoiceTask" class="sentence-card" hidden>
+              <span id="imperativeChoiceType" class="sentence-type">Lücke + Auswahl</span>
+              <p id="imperativePrompt" class="sentence-prompt">___ la puerta, por favor.</p>
+              <div id="imperativeOptions" class="sentence-options" aria-label="Imperativo Antwortmöglichkeiten"></div>
+              <div id="imperativeFeedback" class="sentence-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="sentence-actions">
+              <button id="checkImperative" class="button primary" type="button">Prüfen</button>
+              <button id="showImperativeSolution" class="button secondary" type="button">Lösung anzeigen</button>
+              <button id="nextImperative" class="button ghost" type="button">Weiter</button>
             </div>
           </div>
         </section>

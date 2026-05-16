@@ -809,12 +809,14 @@ a {
 .learning-section,
 .choice-section,
 .exam-section,
+.imperative-section,
 .rules-section {
   padding: 34px 0 0;
 }
 
 .choice-card,
-.exam-card {
+.exam-card,
+.imperative-practice-card {
   display: grid;
   gap: 12px;
   padding: 14px;
@@ -822,6 +824,158 @@ a {
   border-radius: var(--radius);
   background: rgba(25, 31, 42, 0.9);
   box-shadow: var(--shadow);
+}
+
+.imperative-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.imperative-card {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(25, 31, 42, 0.9);
+  box-shadow: var(--shadow);
+}
+
+.imperative-card h3,
+.imperative-practice-card h3 {
+  margin: 0;
+  font-size: 1.08rem;
+}
+
+.imperative-card p,
+.imperative-rules p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.imperative-card summary {
+  min-height: 36px;
+  color: var(--text);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.imperative-rules {
+  display: grid;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.mini-table {
+  display: grid;
+  grid-template-columns: minmax(5.4rem, 0.35fr) 1fr;
+  gap: 8px 10px;
+  padding-top: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.mini-table strong {
+  color: var(--text);
+}
+
+.imperative-filter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.imperative-filter button {
+  min-height: 38px;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--muted);
+  font-size: clamp(0.7rem, 2.8vw, 0.82rem);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.imperative-filter button.is-active {
+  background: var(--accent);
+  color: #0b1712;
+}
+
+.imperative-task {
+  display: grid;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.imperative-task[hidden],
+#imperativeChoiceTask[hidden] {
+  display: none;
+}
+
+.imperative-task-head {
+  display: grid;
+  gap: 4px;
+}
+
+.imperative-task-head strong {
+  color: var(--text);
+  font-size: clamp(1.45rem, 7vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.imperative-form-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.imperative-row {
+  display: grid;
+  gap: 6px;
+}
+
+.imperative-row label {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.imperative-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--field);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 750;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.imperative-input:focus {
+  border-color: rgba(123, 224, 184, 0.78);
+  box-shadow: 0 0 0 4px rgba(123, 224, 184, 0.12);
+}
+
+.imperative-input.correct {
+  border-color: rgba(120, 222, 163, 0.72);
+  background: rgba(120, 222, 163, 0.1);
+}
+
+.imperative-input.incorrect {
+  border-color: rgba(242, 118, 134, 0.78);
+  background: rgba(242, 118, 134, 0.1);
 }
 
 .choice-header {
@@ -1289,7 +1443,9 @@ a {
   }
 
   .choice-card,
-  .exam-card {
+  .exam-card,
+  .imperative-card,
+  .imperative-practice-card {
     padding: 18px;
   }
 
@@ -1300,6 +1456,18 @@ a {
 
   .sentence-options {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .imperative-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .imperative-filter {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .imperative-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sentence-option {

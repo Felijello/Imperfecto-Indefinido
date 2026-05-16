@@ -1,6 +1,6 @@
 # Modo Pasado
 
-Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pretérito Indefinido** und **Pretérito Perfecto**.
+Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pretérito Indefinido**, **Pretérito Perfecto** und **Imperativo afirmativo**.
 
 ## Funktionen
 
@@ -13,6 +13,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pret
 - Zeitform-Filter für alle Zeiten, nur Imperfecto, nur Indefinido oder nur Perfecto
 - Satzübungen zur Zeitwahl mit Lückensätzen und drei echten Formen desselben Verbs
 - Schularbeitsmodus mit 10 gemischten Aufgaben und Punkteübersicht
+- Eigener Imperativo-afirmativo-Bereich mit Regeln, Formen ausfüllen, Auswahlaufgaben und Filtern
 - Signalwort-Training mit Kontext statt isolierter Wortabfrage
 - Merkliste für schwere Verben mit dauerhaft gespeicherter Stern-Markierung
 - Filter "Nur markierte Verben" für gezieltes Wiederholen
@@ -24,7 +25,7 @@ Eine moderne, iPad-freundliche Spanisch-Lernwebseite für **Imperfecto**, **Pret
 - Optionaler Modus für strenge Akzentprüfung
 - Ausführlicher Lernbereich mit Regeln, Beispielen und Signalwörtern
 - Dark Mode, große Eingabefelder und responsives Layout
-- Mobile-first UI mit iPhone-optimierten Übungskarten und Sticky-Bottom-Aktionen
+- Mobile-first UI mit iPhone-optimierten Übungskarten und gut erreichbaren Aktionen
 - Vercel Web Analytics für Besucher- und Page-View-Statistiken
 
 ## Verben
